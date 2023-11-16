@@ -59,6 +59,7 @@ create table dbo.Staff(
         constraint ck_Staff_FirstName_cannot_be_blank check(FirstName <> ''),
     LastName varchar(30) not null
         constraint ck_Staff_LastName_cannot_be_blank check(LastName <> ''),
+    StaffName as concat(FirstName, ' ',  LastName),
     UserName varchar(100) not null
         constraint ck_Staff_Username_should_not_be_blank check(Username <> '')
         constraint u_Staff_Username unique
