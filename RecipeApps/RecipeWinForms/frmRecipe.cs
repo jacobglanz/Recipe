@@ -19,11 +19,11 @@ namespace RecipeWinForms
 
         public void ShowForm(int recipeId)
         {
-            foreach(Control c in tblMain.Controls)
+            foreach (Control c in tblMain.Controls)
             {
                 c.DataBindings.Clear();
             }
-            
+
             string sql = "select r.RecipeId, r.StaffId, r.CuisineTypeId, r.RecipeName, r.Calories, r.DraftTime, r.PublishedTime, r.ArchivedTime, r.RecipeStatus from Recipe r where r.RecipeId = " + recipeId;
             dtRecipe = SQLUtility.GetDateTable(sql);
             if (recipeId < 1)
