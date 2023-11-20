@@ -94,7 +94,7 @@ create table dbo.Recipe(
         constraint f_Staff_Recipe foreign key references Staff(StaffId),
     CuisineTypeId int not null 
         constraint f_CuisineType_Recipe foreign key references CuisineType(CuisineTypeId),
-    RecipeName varchar(30) not null
+    RecipeName varchar(75) not null
         constraint ck_Recipe_RecipeName_cannot_be_blank check(RecipeName <> '')
         constraint u_Recipe_RecipeName unique,
     Calories int not null 
