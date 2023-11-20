@@ -1,7 +1,4 @@
 ﻿
-using CPUFramework;
-using System.Data;
-
 namespace RecipeWinForms
 {
     public partial class frmSearch : Form
@@ -17,14 +14,13 @@ namespace RecipeWinForms
 
         private void ShowRecipeDetailPage(int rowIndex)
         {
-            int recipeId = rowIndex > -1?  (int)gRecipes.Rows[rowIndex].Cells["RecipeId"].Value : 0;
+            int recipeId = rowIndex > -1 ? (int)gRecipes.Rows[rowIndex].Cells["RecipeId"].Value : 0;
             frmRecipe frm = new();
             frm.ShowForm(recipeId);
         }
         private void SearchRecipe(string searchInput)
         {
-            string sql = $"SELECT RecipeId, RecipeName FROM Recipe WHERE RecipeName LIKE '%{searchInput}%'";
-            gRecipes.DataSource = SQLUtility.GetDateTable(sql);
+            gRecipes.DataSource = Recipe.Search(searchInput);
             gRecipes.Columns["RecipeId"].Visible = false;
         }
         private void GRecipes_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
