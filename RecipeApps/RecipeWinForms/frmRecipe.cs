@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using CPUFramework;
+using System.Data;
 
 namespace RecipeWinForms
 {
@@ -16,14 +17,16 @@ namespace RecipeWinForms
 
         public void ShowForm(int recipeId)
         {
-            dtRecipe = Recipe.Load(recipeId);
+            string sql = "select r.RecipeId, r.StaffId, r.CuisineTypeId, r.RecipeName, r.Calories, r.DraftTime, r.PublishedTime, r.ArchivedTime, r.RecipeStatus from Recipe r where r.RecipeId = " + recipeId;
+            dtRecipe = SQLUtility.GetDateTable(sql);
             if (recipeId < 1)
             {
                 dtRecipe.Rows.Add();
             }
+            
 
-            dtStaff = Recipe.GetStaffList();
-            dtCuisineType = Recipe.GetCuisineTypeList();
+            dtStaff = SQLUtility.GetDateTable("select * from Staff");
+            dtCuisineType = SQLUtility.GetDateTable("select * from CuisineType");
 
             WindowsFormsUtility.SetControlBinding(txtRecipeName, dtRecipe);
             WindowsFormsUtility.SetControlBinding(txtCalories, dtRecipe);
@@ -38,12 +41,37 @@ namespace RecipeWinForms
 
         private void Save()
         {
-            Recipe.Save(dtRecipe);
+            string sql = "";
+            DataRow r = dtRecipe.Rows[0];
+
+            string publishedDate = r["PublishedTime"].ToString() == "" ? "null" : $"'{r["PublishedTime"]}'";
+            string archivedTime = r["ArchivedTime"].ToString() == "" ? "null" : $"'{r["ArchivedTime"]}'";
+
+            if ((int)r["RecipeId"] == 0)
+            {
+                sql = "insert Recipe (StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, PublishedTime, ArchivedTime) ";
+                sql += $"select {r["StaffId"]}, {r["CuisineTypeId"]}, '{r["RecipeName"]}', {r["Calories"]}, '{r["DraftTime"]}', {publishedDate}, {archivedTime}";
+
+            }
+            else
+            {
+                sql = string.Join(Environment.NewLine, "update Recipe",
+                    $"set StaffId = {r["StaffId"]},",
+                    $"CuisineTypeId = {r["CuisineTypeId"]},",
+                    $"RecipeName = '{r["RecipeName"]}',",
+                    $"Calories = {r["Calories"]},",
+                    $"DraftTime = '{r["DraftTime"]}',",
+                    $"PublishedTime = {publishedDate},",
+                    $"ArchivedTime = {archivedTime}",
+                    $"where Recipeid = {r["RecipeId"]}");
+            }
+            SQLUtility.ExecuteSQL(sql);
         }
 
         private void Delete()
         {
-            Recipe.Delete(dtRecipe);
+            int recipeId = (int)dtRecipe.Rows[0]["RecipeId"];
+            SQLUtility.ExecuteSQL("delete recipe where RecipeId = " + recipeId);
             this.Close();
         }
 

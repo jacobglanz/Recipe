@@ -1,4 +1,7 @@
 ﻿
+using CPUFramework;
+using System.Data;
+
 namespace RecipeWinForms
 {
     public partial class frmSearch : Form
@@ -20,7 +23,8 @@ namespace RecipeWinForms
         }
         private void SearchRecipe(string searchInput)
         {
-            gRecipes.DataSource = Recipe.Search(searchInput);
+            string sql = $"SELECT RecipeId, RecipeName FROM Recipe WHERE RecipeName LIKE '%{searchInput}%'";
+            gRecipes.DataSource = SQLUtility.GetDateTable(sql);
             gRecipes.Columns["RecipeId"].Visible = false;
         }
         private void GRecipes_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
