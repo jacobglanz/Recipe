@@ -204,7 +204,7 @@
             // 
             lblCaptionStaff.Anchor = AnchorStyles.Left;
             lblCaptionStaff.AutoSize = true;
-            lblCaptionStaff.Location = new Point(6, 110);
+            lblCaptionStaff.Location = new Point(6, 111);
             lblCaptionStaff.Margin = new Padding(6);
             lblCaptionStaff.Name = "lblCaptionStaff";
             lblCaptionStaff.Size = new Size(41, 21);
@@ -215,7 +215,7 @@
             // 
             lstStaff.Anchor = AnchorStyles.Left;
             lstStaff.FormattingEnabled = true;
-            lstStaff.Location = new Point(131, 106);
+            lstStaff.Location = new Point(131, 110);
             lstStaff.Name = "lstStaff";
             lstStaff.Size = new Size(170, 29);
             lstStaff.TabIndex = 7;
@@ -244,7 +244,7 @@
             // 
             lstCuisineType.Anchor = AnchorStyles.Left;
             lstCuisineType.FormattingEnabled = true;
-            lstCuisineType.Location = new Point(131, 75);
+            lstCuisineType.Location = new Point(131, 73);
             lstCuisineType.Name = "lstCuisineType";
             lstCuisineType.Size = new Size(170, 29);
             lstCuisineType.TabIndex = 5;
@@ -253,7 +253,7 @@
             // 
             lblCaptionCuisineType.Anchor = AnchorStyles.Left;
             lblCaptionCuisineType.AutoSize = true;
-            lblCaptionCuisineType.Location = new Point(6, 76);
+            lblCaptionCuisineType.Location = new Point(6, 77);
             lblCaptionCuisineType.Margin = new Padding(6);
             lblCaptionCuisineType.Name = "lblCaptionCuisineType";
             lblCaptionCuisineType.Size = new Size(97, 21);
