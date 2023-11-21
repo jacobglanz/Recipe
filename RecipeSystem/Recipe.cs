@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace RecipeSystem
 {
@@ -6,15 +7,20 @@ namespace RecipeSystem
     {
         public static DataTable Search(string searchInput)
         {
-            string sql = $"SELECT RecipeId, RecipeName FROM Recipe WHERE RecipeName LIKE '%{searchInput}%'";
-            DataTable dt = SQLUtility.GetDateTable(sql);
-            return dt;
+            SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
+            cmd.Parameters["@RecipeName"].Value = searchInput;
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                cmd.Parameters["@All"].Value = 1;
+            }
+            return SQLUtility.GetDateTable(cmd);
         }
 
         public static DataTable Load(int recipeId)
         {
-            string sql = "select r.RecipeId, r.StaffId, r.CuisineTypeId, r.RecipeName, r.Calories, r.DraftTime, r.PublishedTime, r.ArchivedTime, r.RecipeStatus from Recipe r where r.RecipeId = " + recipeId;
-            return SQLUtility.GetDateTable(sql);
+            SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
+            cmd.Parameters["@RecipeId"].Value = recipeId;
+            return SQLUtility.GetDateTable(cmd);
         }
 
         public static void Save(DataTable dtRecipe)
@@ -54,12 +60,16 @@ namespace RecipeSystem
 
         public static DataTable GetStaffList()
         {
-            return SQLUtility.GetDateTable("select * from Staff");
+            SqlCommand cmd = SQLUtility.GetSQLCommand("StaffGet");
+            cmd.Parameters["@All"].Value = 1;
+            return SQLUtility.GetDateTable(cmd);
         }
 
         public static DataTable GetCuisineTypeList()
         {
-            return SQLUtility.GetDateTable("select * from CuisineType");
+            SqlCommand cmd = SQLUtility.GetSQLCommand("CuisineTypeGet");
+            cmd.Parameters["@All"].Value = 1;
+            return SQLUtility.GetDateTable(cmd);
         }
     }
 

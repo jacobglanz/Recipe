@@ -21,7 +21,13 @@ namespace RecipeWinForms
         private void SearchRecipe(string searchInput)
         {
             gRecipes.DataSource = Recipe.Search(searchInput);
-            gRecipes.Columns["RecipeId"].Visible = false;
+            foreach (DataGridViewColumn c in gRecipes.Columns)
+            {
+                if (c.Name != "RecipeName")
+                {
+                    c.Visible = false;
+                }
+            }
         }
         private void GRecipes_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
