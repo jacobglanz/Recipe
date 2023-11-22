@@ -97,7 +97,7 @@
             // 
             txtArchivedTime.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtArchivedTime.BorderStyle = BorderStyle.FixedSingle;
-            txtArchivedTime.Location = new Point(131, 211);
+            txtArchivedTime.Location = new Point(131, 209);
             txtArchivedTime.Name = "txtArchivedTime";
             txtArchivedTime.Size = new Size(363, 29);
             txtArchivedTime.TabIndex = 13;
@@ -106,7 +106,7 @@
             // 
             lblCaptionArchivedTime.Anchor = AnchorStyles.Left;
             lblCaptionArchivedTime.AutoSize = true;
-            lblCaptionArchivedTime.Location = new Point(6, 215);
+            lblCaptionArchivedTime.Location = new Point(6, 213);
             lblCaptionArchivedTime.Margin = new Padding(6);
             lblCaptionArchivedTime.Name = "lblCaptionArchivedTime";
             lblCaptionArchivedTime.Size = new Size(109, 21);
@@ -117,7 +117,7 @@
             // 
             lblCaptionPublishedTime.Anchor = AnchorStyles.Left;
             lblCaptionPublishedTime.AutoSize = true;
-            lblCaptionPublishedTime.Location = new Point(6, 180);
+            lblCaptionPublishedTime.Location = new Point(6, 178);
             lblCaptionPublishedTime.Margin = new Padding(6);
             lblCaptionPublishedTime.Name = "lblCaptionPublishedTime";
             lblCaptionPublishedTime.Size = new Size(116, 21);
@@ -128,7 +128,7 @@
             // 
             lblCaptionDraftTime.Anchor = AnchorStyles.Left;
             lblCaptionDraftTime.AutoSize = true;
-            lblCaptionDraftTime.Location = new Point(6, 145);
+            lblCaptionDraftTime.Location = new Point(6, 143);
             lblCaptionDraftTime.Margin = new Padding(6);
             lblCaptionDraftTime.Name = "lblCaptionDraftTime";
             lblCaptionDraftTime.Size = new Size(83, 21);
@@ -195,7 +195,7 @@
             // 
             dtpDraftTime.Anchor = AnchorStyles.Left;
             dtpDraftTime.Format = DateTimePickerFormat.Short;
-            dtpDraftTime.Location = new Point(131, 141);
+            dtpDraftTime.Location = new Point(131, 139);
             dtpDraftTime.Name = "dtpDraftTime";
             dtpDraftTime.Size = new Size(170, 29);
             dtpDraftTime.TabIndex = 9;
@@ -204,7 +204,7 @@
             // 
             lblCaptionStaff.Anchor = AnchorStyles.Left;
             lblCaptionStaff.AutoSize = true;
-            lblCaptionStaff.Location = new Point(6, 111);
+            lblCaptionStaff.Location = new Point(6, 109);
             lblCaptionStaff.Margin = new Padding(6);
             lblCaptionStaff.Name = "lblCaptionStaff";
             lblCaptionStaff.Size = new Size(41, 21);
@@ -215,7 +215,7 @@
             // 
             lstStaff.Anchor = AnchorStyles.Left;
             lstStaff.FormattingEnabled = true;
-            lstStaff.Location = new Point(131, 110);
+            lstStaff.Location = new Point(131, 108);
             lstStaff.Name = "lstStaff";
             lstStaff.Size = new Size(170, 29);
             lstStaff.TabIndex = 7;
@@ -244,7 +244,7 @@
             // 
             lstCuisineType.Anchor = AnchorStyles.Left;
             lstCuisineType.FormattingEnabled = true;
-            lstCuisineType.Location = new Point(131, 73);
+            lstCuisineType.Location = new Point(131, 75);
             lstCuisineType.Name = "lstCuisineType";
             lstCuisineType.Size = new Size(170, 29);
             lstCuisineType.TabIndex = 5;
@@ -253,7 +253,7 @@
             // 
             lblCaptionCuisineType.Anchor = AnchorStyles.Left;
             lblCaptionCuisineType.AutoSize = true;
-            lblCaptionCuisineType.Location = new Point(6, 77);
+            lblCaptionCuisineType.Location = new Point(6, 76);
             lblCaptionCuisineType.Margin = new Padding(6);
             lblCaptionCuisineType.Name = "lblCaptionCuisineType";
             lblCaptionCuisineType.Size = new Size(97, 21);
@@ -264,7 +264,7 @@
             // 
             lblCaptionStatus.Anchor = AnchorStyles.Left;
             lblCaptionStatus.AutoSize = true;
-            lblCaptionStatus.Location = new Point(6, 249);
+            lblCaptionStatus.Location = new Point(6, 247);
             lblCaptionStatus.Margin = new Padding(6);
             lblCaptionStatus.Name = "lblCaptionStatus";
             lblCaptionStatus.Size = new Size(52, 21);
@@ -275,7 +275,7 @@
             // 
             lblRecipeStatus.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             lblRecipeStatus.AutoSize = true;
-            lblRecipeStatus.Location = new Point(131, 249);
+            lblRecipeStatus.Location = new Point(131, 247);
             lblRecipeStatus.Name = "lblRecipeStatus";
             lblRecipeStatus.Size = new Size(363, 21);
             lblRecipeStatus.TabIndex = 15;
@@ -284,7 +284,7 @@
             // 
             txtPublishedTime.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtPublishedTime.BorderStyle = BorderStyle.FixedSingle;
-            txtPublishedTime.Location = new Point(131, 176);
+            txtPublishedTime.Location = new Point(131, 174);
             txtPublishedTime.Name = "txtPublishedTime";
             txtPublishedTime.Size = new Size(363, 29);
             txtPublishedTime.TabIndex = 11;

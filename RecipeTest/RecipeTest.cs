@@ -80,6 +80,41 @@ namespace RecipeTest
         }
 
         [Test]
+        public static void UpdateRecipeToInvalidCalories()
+        {
+            DataTable dtRecipe = SQLUtility.GetDateTable("select top 1 * from Recipe");
+            Assume.That(dtRecipe.Rows.Count > 0, "No records returned from DB, can't run test");
+            DataRow r = dtRecipe.Rows[0];
+            int recipeId = (int)r["RecipeId"];
+            int calories = (int)r["Calories"];
+            int newCalories = -50;
+            TestContext.WriteLine($"Recipe ({recipeId}) Calories = {calories}");
+            TestContext.WriteLine($"Changing Reciep Calories to {newCalories}");
+            
+            r["Calories"] = newCalories;
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dtRecipe));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
+        public static void UpdateRecipeToInvalidRecipeName()
+        {
+            DataTable dtRecipe = SQLUtility.GetDateTable("select top 1 * from Recipe");
+            Assume.That(dtRecipe.Rows.Count > 0, "No records returned from DB, can't run test");
+            DataRow r = dtRecipe.Rows[0];
+            int recipeId = (int)r["RecipeId"];
+            string recipeName = (string)r["RecipeName"];
+            TestContext.WriteLine($"Recipe ({recipeId}) RecipeName = {recipeName}");
+            TestContext.WriteLine($"Inserting another recipe with the same name");
+
+            r["RecipeId"] = 0;
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dtRecipe));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
         [TestCase("Pizza Slice", 100, "01-01-2020", "02-01-2020", "09-26-2022")] // ALl Fields
         [TestCase("Pizza Family", 800, "08-01-2022", "08-09-2022", null)] // Missing ArchivedDate
         [TestCase("Egg Saled", 205, "08-04-2019", null, "08-25-2019")] // Missing PublishedDate
@@ -134,6 +169,19 @@ namespace RecipeTest
         }
 
         [Test]
+        public static void DeleteStaffWithRecipe()
+        {
+            DataTable dtStaff = SQLUtility.GetDateTable("select top 1 * from Staff s join Recipe r on s.StaffId = r.StaffId");
+            Assume.That(dtStaff.Rows.Count > 0, "No records returned from DB, can't do test");
+            int staffId = (int)dtStaff.Rows[0]["StaffId"];
+            TestContext.WriteLine($"Staff ({staffId}) exists in DB");
+            TestContext.WriteLine($"Deleting Staff {staffId}");
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.DeleteStaff(dtStaff));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
         public void GetListOfStaff()
         {
             int dbStaffCount = SQLUtility.GetFirstColumnFirstRowValue("select count(*) from Staff");
@@ -158,6 +206,26 @@ namespace RecipeTest
 
             Assert.IsTrue(dbCuisineTypeListCount == appCuisineTypeListCount, $"App returned {appCuisineTypeListCount} records");
             TestContext.WriteLine($"App returned {appCuisineTypeListCount} records");
+        }
+
+        private static int GetRandomRecipeId()
+        {
+            return SQLUtility.GetFirstColumnFirstRowValue("select top 1 RecipeId from Recipe");
+        }
+
+        private static string GetFirstColumnFirstRowValueAsString(string sql)
+        {
+            string s = "";
+            DataTable dt = SQLUtility.GetDateTable(sql);
+            if (dt.Rows.Count >0 && dt.Columns.Count > 0)
+            {
+                if (dt.Rows[0][0] != null)
+                {
+                    s = dt.Rows[0][0].ToString();
+                }
+                
+            }
+            return s;
         }
     }
 }

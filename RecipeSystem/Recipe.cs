@@ -58,6 +58,12 @@ namespace RecipeSystem
             SQLUtility.ExecuteSQL("delete recipe where RecipeId = " + recipeId);
         }
 
+        public static void DeleteStaff(DataTable dtStaff)
+        {
+            int staffId = (int)dtStaff.Rows[0]["StaffId"];
+            SQLUtility.ExecuteSQL("delete Staff where StaffId = " + staffId);
+        }
+
         public static DataTable GetStaffList()
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("StaffGet");
