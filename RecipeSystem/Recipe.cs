@@ -8,19 +8,19 @@ namespace RecipeSystem
         public static DataTable Search(string searchInput)
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
-            cmd.Parameters["@RecipeName"].Value = searchInput;
+            SQLUtility.SetParamValue(cmd, "@RecipeName", searchInput);
             if (string.IsNullOrEmpty(searchInput))
             {
-                cmd.Parameters["@All"].Value = 1;
+                SQLUtility.SetParamValue(cmd, "@All", 1);
             }
-            return SQLUtility.GetDateTable(cmd);
+            return SQLUtility.GetDataTable(cmd);
         }
 
         public static DataTable Load(int recipeId)
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
-            cmd.Parameters["@RecipeId"].Value = recipeId;
-            return SQLUtility.GetDateTable(cmd);
+            SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
+            return SQLUtility.GetDataTable(cmd);
         }
 
         public static void Save(DataTable dtRecipe)
@@ -55,7 +55,9 @@ namespace RecipeSystem
         public static void Delete(DataTable dtRecipe)
         {
             int recipeId = (int)dtRecipe.Rows[0]["RecipeId"];
-            SQLUtility.ExecuteSQL("delete recipe where RecipeId = " + recipeId);
+            SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeDelete");
+            SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
+            SQLUtility.ExecuteSQL(cmd);
         }
 
         public static void DeleteStaff(DataTable dtStaff)
@@ -67,15 +69,15 @@ namespace RecipeSystem
         public static DataTable GetStaffList()
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("StaffGet");
-            cmd.Parameters["@All"].Value = 1;
-            return SQLUtility.GetDateTable(cmd);
+            SQLUtility.SetParamValue(cmd, "@All", 1);
+            return SQLUtility.GetDataTable(cmd);
         }
 
         public static DataTable GetCuisineTypeList()
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("CuisineTypeGet");
-            cmd.Parameters["@All"].Value = 1;
-            return SQLUtility.GetDateTable(cmd);
+            SQLUtility.SetParamValue(cmd, "@All", 1);
+            return SQLUtility.GetDataTable(cmd);
         }
     }
 

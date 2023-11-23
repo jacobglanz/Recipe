@@ -120,7 +120,7 @@ create table dbo.RecipeIngredient(
     IngredientId int not null 
         constraint f_Ingredient_RecipeIngredient foreign key references Ingredient(IngredientId),
     UnitOfMeasureId int null 
-        constraint f_Recipe_UnitOfMeasureId foreign key references UnitOfMeasure(UnitOfMeasureId),
+        constraint f_UnitOfMeasureId_RecipeIngredient foreign key references UnitOfMeasure(UnitOfMeasureId),
     Amount decimal(8,3) not null 
         constraint ck_RecipeIngredient_Amount_must_be_more_then_0 check(Amount > 0),
     Seq int not null
@@ -143,9 +143,9 @@ go
 create table dbo.MealCourseRecipe(
     MealCourseRecipeId int not null identity primary key,
     MealCourseId int not null 
-        constraint f_MealCourseRecipe_MealCourse foreign key references MealCourse(MealCourseId),
+        constraint f_MealCourse_MealCourseRecipe foreign key references MealCourse(MealCourseId),
     RecipeId int not null
-        constraint f_MealCourseRecipe_Recipe foreign key references Recipe(RecipeId),
+        constraint f_Recipe_MealCourseRecipe foreign key references Recipe(RecipeId),
     MainDish bit not null,
     constraint u_MealCourse_Recipe unique(MealCourseId, RecipeId)
 )

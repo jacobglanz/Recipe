@@ -108,6 +108,10 @@ go
    union select 'jacob123', 'French', 'Apple Yogurt Smoothie', 100, getdate(), null, getdate()
    union select 'JDow9856', 'English', 'Cheese Bread', 155, getdate(), dateadd(day, 323, getdate()), dateadd(day, 500, getdate())
    union select 'MosheW546', 'American', 'Butter Muffins', 175, dateadd(day, -500, getdate()), null, null
+   union select 'MosheW546', 'American', 'Family Pizza Pie', 2505, dateadd(day, -50, getdate()), null, null
+   union select 'MosheW546', 'American', 'Tomato Basil Pasta', 2505, dateadd(day, -50, getdate()), null, null
+   union select 'MosheW546', 'American', 'Pancakes', 2505, dateadd(day, -50, getdate()), null, null
+   union select 'MosheW546', 'American', 'Grilled Cheese', 2505, dateadd(day, -50, getdate()), null, null
 )
 insert Recipe(StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, PublishedTime, ArchivedTime)
    select s.StaffId, ct.CuisineTypeId, x.RecipeName, x.Calories, x.DraftTime, x.PublishedTime, x.ArchivedTime
@@ -119,6 +123,7 @@ go
 ;with x as(
    select Amount = 1, UnitOfMeasureAbbreviation = 'tsp', IngredientName = 'sugar', Seq = 1, RecipeName = 'Chocolate Chip Cookies'
    union select 0.5, 'cup', 'oil', 2, 'Chocolate Chip Cookies'
+   union select 0.5, 'cup', 'Flour', 1, 'Pancakes'
    union select 3, 'qty',  'egg', 3, 'Chocolate Chip Cookies'
    union select 2, 'cup', 'Flour', 4, 'Chocolate Chip Cookies'
    union select 1, 'tsp', 'vanilla sugar', 5, 'Chocolate Chip Cookies'
@@ -156,6 +161,7 @@ go
 
 ;with x as(
    select InstructionDesc = 'First combine sugar, oil and eggs in a bowl', Seq = 1, RecipeName = 'Chocolate Chip Cookies'
+   union select 'Grill the Cheese for 12 minutes on 250 ', 1, 'Grilled Cheese '
    union select 'mix well', 2, 'Chocolate Chip Cookies'
    union select 'add flour, vanilla sugar, baking powder and baking soda', 3, 'Chocolate Chip Cookies'
    union select 'beat for 5 minutes', 4, 'Chocolate Chip Cookies'
@@ -187,10 +193,11 @@ go
 ;with x as(
    select RecipeName = 'Cheese Bread', MainDish = 1, CourseName = 'Main course', MealName = 'Breakfast bash'
    union select 'Butter Muffins', 0, 'Main course', 'Breakfast bash'
-   union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Breakfast bash'
-   union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Snack'
+   -- union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Breakfast bash'
+   -- union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Snack'
    union select 'Chocolate Chip Cookies', 1, 'Appetizer', 'Lunch'
    union select 'Butter Muffins', 1, 'Appetizer', 'Lunch'
+   union select 'Grilled Cheese ', 0, 'Appetizer', 'Lunch'
 )
 insert MealCourseRecipe(RecipeId, MealCourseId, MainDish)
    select r.RecipeId, mc.MealCourseId, x.MainDish
@@ -216,18 +223,19 @@ go
 
 ;with x as(
    select CookBookName = 'Treats for two', RecipeName = 'Chocolate Chip Cookies', Seq = 1
-   union select 'Treats for two', 'Apple Yogurt Smoothie', 2
+   -- union select 'Treats for two', 'Apple Yogurt Smoothie', 2
+   -- union select 'American food line', 'Apple Yogurt Smoothie', 3
+   -- union select 'The best of the 20''s', 'Apple Yogurt Smoothie', 3
+   -- union select 'Canada food line', 'Apple Yogurt Smoothie', 3
+   union select 'Treats for two', 'Pancakes', 5
    union select 'Treats for two', 'Cheese Bread', 3
    union select 'Treats for two', 'Butter Muffins', 4
    union select 'The best of the 20''s', 'Butter Muffins', 1
    union select 'The best of the 20''s', 'Cheese Bread', 2
-   union select 'The best of the 20''s', 'Apple Yogurt Smoothie', 3
    union select 'American food line', 'Butter Muffins', 1
    union select 'American food line', 'Cheese Bread', 2
-   union select 'American food line', 'Apple Yogurt Smoothie', 3
    union select 'Canada food line', 'Butter Muffins', 1
    union select 'Canada food line', 'Cheese Bread', 2
-   union select 'Canada food line', 'Apple Yogurt Smoothie', 3
    union select 'i''m hungry', 'Cheese Bread', 1
    union select 'i''m hungry', 'Butter Muffins', 2
 )
