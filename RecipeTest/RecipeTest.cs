@@ -153,15 +153,15 @@ namespace RecipeTest
         }
 
         [Test]
-        public static void DeleteRecipe()
+        public static void DeleteRecipeWithoutRelatedRecordsAndBusinessRules()
         {
-
             string sql = @"
                 select top 1 r.RecipeId
                 from Recipe r
                 left join CookBookRecipe cbr on cbr.RecipeId = r.RecipeId
                 left join MealCourseRecipe mcr on r.RecipeId = mcr.RecipeId
-                where cbr.CookBookRecipeId is null and mcr.MealCourseRecipeId is null";
+                where cbr.CookBookRecipeId is null and mcr.MealCourseRecipeId is null
+                and (r.RecipeStatus <> 'Published' or datediff(day, r.ArchivedTime, getdate()) > 30)";
             DataTable dt = SQLUtility.GetDataTable(sql);
             Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
             int recipeId = (int)dt.Rows[0]["RecipeId"];
@@ -175,6 +175,33 @@ namespace RecipeTest
             TestContext.WriteLine($"Recipe ({recipeId}) does not exists in DB");
         }
 
+        [Test]
+        public static void DeletePublishedRecipe()
+        {
+            string sql = "select top 1 r.RecipeId from Recipe r where r.RecipeStatus = 'Published'";
+            DataTable dt = SQLUtility.GetDataTable(sql);
+            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+            int recipeId = (int)dt.Rows[0]["RecipeId"];
+            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+            TestContext.WriteLine($"Deleting Recipe {recipeId}");
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
+        public static void DeleteRecipeThatIsArchivedLessOrEqualTo30Days()
+        {
+            string sql = "select top 1 r.RecipeId from Recipe r where datediff(day, r.ArchivedTime, getdate()) <= 30";
+            DataTable dt = SQLUtility.GetDataTable(sql);
+            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+            int recipeId = (int)dt.Rows[0]["RecipeId"];
+            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+            TestContext.WriteLine($"Deleting Recipe {recipeId}");
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+            TestContext.WriteLine(ex.Message);
+        }
         [Test]
         public static void DeleteStaffWithRecipe()
         {
