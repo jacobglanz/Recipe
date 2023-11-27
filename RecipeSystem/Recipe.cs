@@ -25,31 +25,11 @@ namespace RecipeSystem
 
         public static void Save(DataTable dtRecipe)
         {
-            string sql = "";
-            DataRow r = dtRecipe.Rows[0];
-
-            string publishedDate = r["PublishedTime"].ToString() == "" ? "null" : $"'{r["PublishedTime"]}'";
-            string archivedTime = r["ArchivedTime"].ToString() == "" ? "null" : $"'{r["ArchivedTime"]}'";
-
-            if ((int)r["RecipeId"] == 0)
+            if(dtRecipe.Rows.Count != 1)
             {
-                sql = "insert Recipe (StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, PublishedTime, ArchivedTime) ";
-                sql += $"select {r["StaffId"]}, {r["CuisineTypeId"]}, '{r["RecipeName"]}', {r["Calories"]}, '{r["DraftTime"]}', {publishedDate}, {archivedTime}";
-
+                throw new Exception("Cannot save Recipe, 'DataTable of Recipes Rows Count != 1'");
             }
-            else
-            {
-                sql = string.Join(Environment.NewLine, "update Recipe",
-                    $"set StaffId = {r["StaffId"]},",
-                    $"CuisineTypeId = {r["CuisineTypeId"]},",
-                    $"RecipeName = '{r["RecipeName"]}',",
-                    $"Calories = {r["Calories"]},",
-                    $"DraftTime = '{r["DraftTime"]}',",
-                    $"PublishedTime = {publishedDate},",
-                    $"ArchivedTime = {archivedTime}",
-                    $"where Recipeid = {r["RecipeId"]}");
-            }
-            SQLUtility.ExecuteSQL(sql);
+            SQLUtility.SaveDateRow(dtRecipe.Rows[0], "RecipeUpdate");
         }
 
         public static void Delete(DataTable dtRecipe)
