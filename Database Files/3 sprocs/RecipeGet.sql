@@ -1,9 +1,10 @@
-create or alter procedure dbo.RecipeGet(@All int = 0, @RecipeId int = 0, @RecipeName varchar(75) = '')
+create or alter procedure dbo.RecipeGet(@RecipeId int = 0, @All int = 0, @RecipeName varchar(75) = '')
 as
 begin
     select @RecipeName = nullif(@RecipeName, '')
     select
         r.RecipeId,
+        RecipeDesc = dbo.RecipeDesc(r.RecipeId),
         r.StaffId,
         r.CuisineTypeId, 
         r.RecipeName, 

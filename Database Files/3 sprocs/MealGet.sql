@@ -6,6 +6,7 @@ begin
         m.MealId,
         m.StaffId,
         m.MealName,
+        MealCalories = dbo.MealCalories(m.MealId),
         m.Active,
         m.CreatedDate,
         m.MealImage
