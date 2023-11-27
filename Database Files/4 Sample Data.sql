@@ -223,10 +223,10 @@ go
 
 ;with x as(
    select CookBookName = 'Treats for two', RecipeName = 'Chocolate Chip Cookies', Seq = 1
-   -- union select 'Treats for two', 'Apple Yogurt Smoothie', 2
-   -- union select 'American food line', 'Apple Yogurt Smoothie', 3
-   -- union select 'The best of the 20''s', 'Apple Yogurt Smoothie', 3
-   -- union select 'Canada food line', 'Apple Yogurt Smoothie', 3
+   union select 'Treats for two', 'Apple Yogurt Smoothie', 2
+   union select 'American food line', 'Apple Yogurt Smoothie', 3
+   union select 'The best of the 20''s', 'Apple Yogurt Smoothie', 3
+   union select 'Canada food line', 'Apple Yogurt Smoothie', 3
    union select 'Treats for two', 'Pancakes', 5
    union select 'Treats for two', 'Cheese Bread', 3
    union select 'Treats for two', 'Butter Muffins', 4

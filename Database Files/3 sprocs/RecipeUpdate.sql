@@ -4,9 +4,9 @@ create or alter procedure dbo.RecipeUpdate(
     @CuisineTypeId int,
     @RecipeName varchar(75),
     @Calories int,
-    @DraftTime datetime output,
-    @PublishedTime datetime output,
-    @ArchivedTime datetime output,
+    @DraftTime datetime = null output,
+    @PublishedTime datetime = null output,
+    @ArchivedTime datetime = null output,
     @RecipeStatus varchar(9),
     @Message varchar(500) = '' output
 ) 
