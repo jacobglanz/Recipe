@@ -1,5 +1,5 @@
 use HeartyHearthDB
-   go 
+   go
    delete CookBookRecipe
    delete CookBook
    delete MealCourseRecipe
@@ -84,10 +84,10 @@ go
 )
 insert Meal(StaffId, MealName, CreatedDate)
    select s.StaffId, x.MealName, x.CreatedAt
-   from x 
-   join Staff s 
+   from x
+   join Staff s
    on x.Username = s.Username
-go 
+go
 
 ;with x as(
    select MealName = 'Breakfast bash', CourseName = 'Main course'
@@ -98,10 +98,10 @@ go
 )
 insert MealCourse(MealId, CourseId)
    select m.MealId, c.CourseId
-   from x 
+   from x
    join Course c on x.CourseName = c.CourseName
    join Meal m on x.MealName = m.MealName
-go 
+go
 
 ;with x as(
    select UserName = 'jacob123', CuisineTypeName = 'American', RecipeName = 'Chocolate Chip Cookies', Calories = 200, DraftTime = getdate(), PublishedTime = null, ArchivedTime = null
@@ -118,7 +118,7 @@ insert Recipe(StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, Published
    from x
    join Staff s on x.UserName = s.Username
    join CuisineType ct on x.CuisineTypeName = ct.CuisineTypeName
-go 
+go
 
 ;with x as(
    select Amount = 1, UnitOfMeasureAbbreviation = 'tsp', IngredientName = 'sugar', Seq = 1, RecipeName = 'Chocolate Chip Cookies'
@@ -153,11 +153,11 @@ go
 )
 insert RecipeIngredient(RecipeId, IngredientId, Amount, UnitOfMeasureId, Seq)
    select r.RecipeId, i.IngredientId, x.Amount, uom.UnitOfMeasureId, x.Seq
-   from x 
+   from x
    join Recipe r on x.RecipeName = r.RecipeName
    join Ingredient i on x.IngredientName = i.IngredientName
    left join UnitOfMeasure uom on x.UnitOfMeasureAbbreviation = uom.Abbreviation
-go 
+go
 
 ;with x as(
    select InstructionDesc = 'First combine sugar, oil and eggs in a bowl', Seq = 1, RecipeName = 'Chocolate Chip Cookies'
@@ -184,42 +184,42 @@ go
    union select 'fill muffin pans 3/4 full and bake for 30 minutes', 4, 'Butter Muffins'
 )
 insert RecipeInstruction(RecipeId, InstructionDesc, Seq)
-   select r.RecipeId, x.InstructionDesc, x.Seq 
-   from x 
-   join Recipe r 
-   on x.RecipeName = r.RecipeName 
-go 
+   select r.RecipeId, x.InstructionDesc, x.Seq
+   from x
+   join Recipe r
+   on x.RecipeName = r.RecipeName
+go
 
 ;with x as(
    select RecipeName = 'Cheese Bread', MainDish = 1, CourseName = 'Main course', MealName = 'Breakfast bash'
    union select 'Butter Muffins', 0, 'Main course', 'Breakfast bash'
-   -- union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Breakfast bash'
-   -- union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Snack'
+   union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Breakfast bash'
+   union select 'Apple Yogurt Smoothie', 1, 'Appetizer', 'Snack'
    union select 'Chocolate Chip Cookies', 1, 'Appetizer', 'Lunch'
    union select 'Butter Muffins', 1, 'Appetizer', 'Lunch'
    union select 'Grilled Cheese ', 0, 'Appetizer', 'Lunch'
 )
 insert MealCourseRecipe(RecipeId, MealCourseId, MainDish)
    select r.RecipeId, mc.MealCourseId, x.MainDish
-   from x 
+   from x
    join Recipe r on r.RecipeName = x.RecipeName
    join Meal m on m.MealName = x.MealName
    join Course c on c.CourseName = x.CourseName
    join MealCourse mc on mc.CourseId = c.CourseId and mc.MealId = m.MealId
-go 
+go
 
 ;with x as (
    select CookBookName = 'Treats for two', Price = 30, Active = 1, Username = 'jacob123', CreatedDate = getdate()
    union select 'The best of the 20''s', 50, 1, 'jacob123', getdate()
-   union select 'i''m hungry', 19.99, 0, 'JDow9856', getdate()
+   union select 'i''m hungry', 19.9, 0, 'JDow9856', getdate()
    union select 'American food line', 19.99, 0, 'JDow9856', getdate()
    union select 'Canada food line', 19.99, 0, 'MosheW546', getdate()
 )
 insert CookBook(StaffId, CookBookName, Price, Active, CreatedDate)
    select s.StaffId, x.CookBookName, x.Price, x.Active, x.CreatedDate
-   from x 
+   from x
    join Staff s on x.Username = s.Username
-go 
+go
 
 ;with x as(
    select CookBookName = 'Treats for two', RecipeName = 'Chocolate Chip Cookies', Seq = 1
@@ -241,7 +241,7 @@ go
 )
 insert CookBookRecipe(CookBookId, RecipeId, Seq)
    select cb.CookBookId, r.RecipeId, x.Seq
-   from x 
+   from x
    join CookBook cb on x.CookBookName = cb.CookBookName
    join Recipe r on x.RecipeName = r.RecipeName
-go 
+go

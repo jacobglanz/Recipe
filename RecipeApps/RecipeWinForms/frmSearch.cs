@@ -16,11 +16,11 @@ namespace RecipeWinForms
         {
             int recipeId = rowIndex > -1 ? (int)gRecipes.Rows[rowIndex].Cells["RecipeId"].Value : 0;
             frmRecipe frm = new();
-            frm.ShowForm(recipeId);
+            frm.LoadForm(recipeId);
         }
         private void SearchRecipe(string searchInput)
         {
-            gRecipes.DataSource = Recipe.Search(searchInput);
+            gRecipes.DataSource = Recipe.Get(0, false, searchInput);
             foreach (DataGridViewColumn c in gRecipes.Columns)
             {
                 if (c.Name != "RecipeName")

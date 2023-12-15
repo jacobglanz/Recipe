@@ -1,21 +1,27 @@
-create or alter procedure dbo.MealGet(@all int = 0, @MealId int = 0, @MealName varchar(30) = '')
-as 
-begin 
+create or alter procedure dbo.MealGet(
+    @all int = 0,
+    @MealId int = 0,
+    @MealName varchar(30) = ''
+)
+as
+begin
     select @MealName = nullif(@MealName, '')
     select
         m.MealId,
-        m.StaffId,
-        m.MealName,
-        MealCalories = dbo.MealCalories(m.MealId),
-        m.Active,
-        m.CreatedDate,
-        m.MealImage
+        [Meal Name] = m.MealName,
+        [User] = s.FirstName + ' ' + s.LastName,
+        [Num Calories] = dbo.MealCalories(m.MealId),
+        [Num Courses] = dbo.MealCourseCount(m.MealId),
+        [Num Recipes] = dbo.MealRecipeCount(m.MealId)
+
     from Meal m
+    join Staff s
+    on m.StaffId = s.StaffId
     where m.MealId = @MealId
     or m.MealName like '%' + @MealName + '%'
     or @all = 1
-end 
-go 
+end
+go
 
 /*
 exec MealGet

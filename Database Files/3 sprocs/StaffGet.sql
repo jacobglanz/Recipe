@@ -1,30 +1,32 @@
-create or alter procedure dbo.StaffGet(@all int = 0, @StaffId int = 0, @UserName varchar(100) = '')
+create or alter proc dbo.StaffGet(
+    @StaffId int = 0,
+    @All bit = 0,
+    @IncludeBlank bit = 0,
+    @Message varchar(500) = '' output
+)
 as
 begin
-    select @UserName = nullif(@UserName, '')
-    select
-        s.StaffId,
-        s.FirstName,
-        s.LastName,
-        s.StaffName,
-        s.UserName
-    from Staff s
-    where s.StaffId = @StaffId
-    or s.UserName like '%' + @UserName + '%'
-    or @all = 1
-end 
-go 
+    declare @Return int = 0
+
+    select StaffId, FirstName, LastName, UserName--, StaffName = FirstName + ' ' + LastName
+    from Staff
+    where StaffId = @StaffId
+    or @All = 1
+    union select 0, '', '', ''--, ''
+    where @IncludeBlank = 1
+    order by StaffId
+
+    return @Return
+end
+go
 
 /*
 exec StaffGet
 
 exec StaffGet @all = 1
 
-exec StaffGet @UserName = ''--empty
-
-exec StaffGet @UserName = 'j'
-
 declare @StaffId int
 select top 1 @StaffId = s.StaffId from Staff s
+select @StaffId
 exec StaffGet @StaffId = @StaffId
 */

@@ -1,6 +1,12 @@
-create or alter procedure dbo.RecipeIngredientGet(@all int = 0, @RecipeIngredientId int = 0, @RecipeId int = 0)
-as 
-begin 
+create or alter procedure dbo.RecipeIngredientGet(
+    @RecipeId int = 0,
+    @RecipeIngredientId int = 0,
+    @Message varchar(500) = ''
+)
+as
+begin
+    declare @Return int = 0
+
     select @RecipeId = 0 where @RecipeIngredientId <> 0
     select
         ri.RecipeIngredientId,
@@ -9,18 +15,18 @@ begin
         ri.UnitOfMeasureId,
         ri.Amount,
         ri.Seq
-    from RecipeIngredient ri 
+    from RecipeIngredient ri
     where ri.RecipeIngredientId = @RecipeIngredientId
     or ri.RecipeId = @RecipeId
-    or @all = 1
     order by ri.RecipeId, ri.Seq
-end 
-go 
+
+    return @Return
+end
+go
 
 /*
 exec RecipeIngredientGet
 
-exec RecipeIngredientGet @all = 1
 
 declare @RecipeId int
 select top 1 @RecipeId = ri.RecipeId from RecipeIngredient ri
@@ -30,7 +36,7 @@ declare @RecipeIngredientId int
 select top 1 @RecipeIngredientId = ri.RecipeIngredientId from RecipeIngredient ri
 exec RecipeIngredientGet @RecipeIngredientId = @RecipeIngredientId --get one RecipeIngredient
 
---needs to run together with the declare statements, assumes that there is more then 1 recipe, 
+--needs to run together with the declare statements, assumes that there is more then 1 recipe,
     --gets one RecipeIngredient even the RecipeId is specified
 select top 1 @RecipeIngredientId = ri.RecipeIngredientId from RecipeIngredient ri where ri.RecipeId <> @RecipeId
 exec RecipeIngredientGet @RecipeIngredientId = @RecipeIngredientId, @RecipeId = @RecipeId

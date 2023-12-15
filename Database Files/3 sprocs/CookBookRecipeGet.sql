@@ -1,4 +1,8 @@
-create or alter procedure dbo.CookBookRecipeGet(@all int = 0, @CookBookRecipeId int = 0, @CookBookId int = 0)
+create or alter procedure dbo.CookBookRecipeGet(
+    @all int = 0,
+    @CookBookRecipeId int = 0,
+    @CookBookId int = 0
+)
 as
 begin
     select @CookBookId = 0 where @CookBookRecipeId <> 0
@@ -13,7 +17,7 @@ begin
     or @all = 1
     order by cbr.CookBookId, cbr.Seq
 end
-go 
+go
 
 /*
 exec CookBookRecipeGet

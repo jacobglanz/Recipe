@@ -18,7 +18,7 @@ namespace RecipeTest
             TestContext.WriteLine($"DB has {dbRecipeCount} records");
             TestContext.WriteLine($"App should return {dbRecipeCount} records");
 
-            int appRecipeCount = Recipe.Search("").Rows.Count;
+            int appRecipeCount = Recipe.Get("").Rows.Count;
 
             Assert.IsTrue(appRecipeCount == dbRecipeCount, $"App Retuned {appRecipeCount} records");
             TestContext.WriteLine($"App Retuned {appRecipeCount} records");
@@ -31,7 +31,7 @@ namespace RecipeTest
             Assume.That(recipeId > 0, "No records returned from DB, can't run test");
             TestContext.WriteLine($"App should return RecipeId {recipeId}");
 
-            DataTable dtAppRecipe = Recipe.Load(recipeId);
+            DataTable dtAppRecipe = Recipe.Get(recipeId);
             int appRecipeId = (int)dtAppRecipe.Rows[0]["RecipeId"];
 
             Assert.IsTrue(appRecipeId == recipeId, $"App returned RecipeId {appRecipeId}");
