@@ -151,7 +151,7 @@ namespace RecipeWinForms
             int seq = 1;
             foreach (DataRow r in rows)
             {
-                if ((int)r["Seq"] != seq)
+                if (r["Seq"] is int && (int)r["Seq"] != seq)
                 {
                     MessageBox.Show("Seq not correct, make sure to start from 1 and not skip any number");
                     return;

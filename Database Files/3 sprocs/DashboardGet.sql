@@ -1,8 +1,8 @@
 create or alter proc dbo.DashboardGet(
     @Message varchar(500) = ''
 )
-as 
-begin 
+as
+begin
     declare @Return int = 0
 
     select RecordType = 'Recipes', Count = count(*) from Recipe
@@ -11,7 +11,7 @@ begin
     order by RecordType desc
 
     return @Return
-end 
-go 
+end
+go
 
-exec DashboardGet
+-- exec DashboardGet
