@@ -3,7 +3,7 @@ create or alter proc dbo.RecipeIngredientUpdate(
     @RecipeId int,
     @IngredientId int,
     @UnitOfMeasureId int,
-    @Amount decimal,
+    @Amount decimal(10,2) output,
     @Seq int,
     @Message varchar(500) = ''
 )
@@ -11,7 +11,6 @@ as
 begin
     declare @Return int = 0
 
-    --dont allow skip seq
     select @RecipeIngredientId = isnull(@RecipeIngredientId,0), @UnitOfMeasureId = nullif(@UnitOfMeasureId,0)
 
     if @RecipeIngredientId = 0

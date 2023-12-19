@@ -1,265 +1,218 @@
+using NUnit.Framework.Internal;
+using RecipeTesting;
 using System.Data;
 
 namespace RecipeTest
 {
-    public class Tests
+    public class RecipeTesting
     {
         [SetUp]
         public void Setup()
         {
             DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
+            SQLUtility.ExecuteSQL("DataUpdate"); //refresh test data
         }
 
         [Test]
-        public static void GetListOfRecipies()
+        public void GetRecipe()
         {
-            int dbRecipeCount = GetFirstColumnFirstRowValueAsString("select count(*) from Recipe");
-            Assume.That(dbRecipeCount > 0, "No records returned from DB, can't run test");
-            TestContext.WriteLine($"DB has {dbRecipeCount} records");
-            TestContext.WriteLine($"App should return {dbRecipeCount} records");
+            int dbRecipeId = Utils.GetFirstRowColumnIfInt("select top 1 RecipeId from Recipe");
+            Assume.That(dbRecipeId > 0, "DB didn't return any records, can't run test");
+            TestContext.WriteLine($"DB returned recipe {dbRecipeId}");
+            TestContext.WriteLine($"App should return Recipe {dbRecipeId}");
 
-            int appRecipeCount = Recipe.Get("").Rows.Count;
+            int appRecipeId = Utils.GetFirstRowColumnIfInt(Recipe.Get(dbRecipeId));
 
-            Assert.IsTrue(appRecipeCount == dbRecipeCount, $"App Retuned {appRecipeCount} records");
-            TestContext.WriteLine($"App Retuned {appRecipeCount} records");
+            Assert.IsTrue(appRecipeId == dbRecipeId, $"App returned Recipe {appRecipeId}");
+            TestContext.WriteLine($"App returned Recipe {appRecipeId}");
         }
 
         [Test]
-        public static void LoadRecipe()
+        public static void GetAll()
         {
-            int recipeId = GetFirstColumnFirstRowValueAsString("select top 1 RecipeId from Recipe");
-            Assume.That(recipeId > 0, "No records returned from DB, can't run test");
-            TestContext.WriteLine($"App should return RecipeId {recipeId}");
+            int dbRecipeCount = Utils.GetFirstRowColumnIfInt("select count(*) from Recipe");
+            Assume.That(dbRecipeCount > 0, "DB didn't return any records, can't run test");
+            TestContext.WriteLine($"DB Recipe Count = {dbRecipeCount}");
+            TestContext.WriteLine($"App Recipe Count shold also be = {dbRecipeCount}");
 
-            DataTable dtAppRecipe = Recipe.Get(recipeId);
-            int appRecipeId = (int)dtAppRecipe.Rows[0]["RecipeId"];
+            int appRecipeCount = Recipe.GetAll().Rows.Count;
 
-            Assert.IsTrue(appRecipeId == recipeId, $"App returned RecipeId {appRecipeId}");
-            TestContext.WriteLine($"App returned RecipeId {appRecipeId}");
+            Assert.IsTrue(dbRecipeCount == appRecipeCount, $"App Recipe Count should be = {dbRecipeCount} but is = {appRecipeCount}");
+            TestContext.WriteLine($"App Recipe Count = {appRecipeCount}");
         }
 
         [Test]
-        [TestCase("Update", "01-01-2020", null, null)]
-        [TestCase("Update", "01-01-2022", null, "05-01-2022")]
-        [TestCase("Update", "06-07-2023", "09-24-2023", null)]
-        public static void UpdateRecipe(string RecipeName, DateTime DraftTime, DateTime? PublishedTime, DateTime? ArchivedTime)
+        public void DeleteRecipeAndAllMenationsOfIt()
         {
-            DataTable dtDbRecipe = SQLUtility.GetDataTable("select top 1 * from Recipe");
-            Assume.That(dtDbRecipe.Rows.Count > 0, "No records retunred from DB, can't run test");
-            DataRow r = dtDbRecipe.Rows[0];
-            int oldStaffId = (int)r["StaffId"];
-            int oldCuisineTypeId = (int)r["CuisineTypeId"];
-            TestContext.WriteLine($"DB Recipe ({r["RecipeId"]}): RecipeName = {r["RecipeName"]}, Calories = {r["Calories"]}");
-            string newRecipeName = $"{RecipeName} {DateTime.Now}";
-            int newCalories = new Random().Next(50, 500);
-            int newStaffId = GetFirstColumnFirstRowValueAsString($"select top 1 StaffId from Staff where StaffId <> {oldStaffId}");
-            newStaffId = newStaffId != 0 ? newStaffId : oldStaffId;
-            int newCuisineTypeId = GetFirstColumnFirstRowValueAsString($"select top 1 CuisineTypeId from CuisineType where CuisineTypeId <> {oldCuisineTypeId}");
-            newCuisineTypeId = newCuisineTypeId != 0 ? newCuisineTypeId : oldCuisineTypeId;
-            TestContext.WriteLine($"App should update Recipe to: RecipeName = {newRecipeName}, Calories = {newCalories}");
-
-            r["RecipeName"] = newRecipeName;
-            r["Calories"] = newCalories;
-            r["StaffId"] = newStaffId;
-            r["CuisineTypeId"] = newCuisineTypeId;
-            r["DraftTime"] = DraftTime;
-            r["PublishedTime"] = PublishedTime.HasValue ? PublishedTime : DBNull.Value;
-            r["ArchivedTime"] = ArchivedTime.HasValue ? ArchivedTime : DBNull.Value;
-
-            Recipe.Save(dtDbRecipe);
-
-            DataRow rUpdated = SQLUtility.GetDataTable($"select * from Recipe where RecipeId = {r["RecipeId"]}").Rows[0];
-            Assert.IsTrue((string)rUpdated["RecipeName"] == newRecipeName, $"Updated RecipeName = {rUpdated["RecipeName"]}");
-            Assert.IsTrue((int)rUpdated["Calories"] == newCalories, $"Update Calories = {rUpdated["Calories"]}");
-            Assert.IsTrue((int)rUpdated["StaffId"] == newStaffId, $"Update StaffId = {rUpdated["StaffId"]}");
-            Assert.IsTrue((int)rUpdated["CuisineTypeId"] == newCuisineTypeId, $"Update CuisineTypeId = {rUpdated["CuisineTypeId"]}");
-            Assert.IsTrue((DateTime)rUpdated["DraftTime"] == DraftTime, $"Update DraftTime = {rUpdated["DraftTime"]}");
-            Assert.IsTrue(rUpdated["PublishedTime"].ToString() == PublishedTime.ToString(), $"Update PublishedTime = {rUpdated["PublishedTime"]}");
-            Assert.IsTrue(rUpdated["ArchivedTime"].ToString() == ArchivedTime.ToString(), $"Update ArchivedTime = {rUpdated["ArchivedTime"]}");
-            TestContext.WriteLine($"DB Updated Recipe ({rUpdated["RecipeId"]}), RecipeName = {rUpdated["RecipeName"]}, Calories = {rUpdated["Calories"]}, StaffId = {rUpdated["StaffId"]}, CuisineTypeId = {rUpdated["CuisineTypeId"]}, DraftTime = {rUpdated["DraftTime"]}, PublishedTime = {rUpdated["PublishedTime"]}, ArchivedTime = {rUpdated["ArchivedTime"]}");
-        }
-
-        [Test]
-        public static void UpdateRecipeToInvalidCalories()
-        {
-            DataTable dtRecipe = SQLUtility.GetDataTable("select top 1 * from Recipe");
-            Assume.That(dtRecipe.Rows.Count > 0, "No records returned from DB, can't run test");
-            DataRow r = dtRecipe.Rows[0];
-            int recipeId = (int)r["RecipeId"];
-            int calories = (int)r["Calories"];
-            int newCalories = -50;
-            TestContext.WriteLine($"Recipe ({recipeId}) Calories = {calories}");
-            TestContext.WriteLine($"Changing Reciep Calories to {newCalories}");
-
-            r["Calories"] = newCalories;
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dtRecipe));
-            TestContext.WriteLine(ex.Message);
-        }
-
-        [Test]
-        public static void UpdateRecipeToInvalidRecipeName()
-        {
-            DataTable dtRecipe = SQLUtility.GetDataTable("select top 1 * from Recipe");
-            Assume.That(dtRecipe.Rows.Count > 0, "No records returned from DB, can't run test");
-            DataRow r = dtRecipe.Rows[0];
-            int recipeId = (int)r["RecipeId"];
-            string recipeName = (string)r["RecipeName"];
-            TestContext.WriteLine($"Recipe ({recipeId}) RecipeName = {recipeName}");
-            TestContext.WriteLine($"Inserting another recipe with the same name");
-
-            r["RecipeId"] = 0;
-
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Save(dtRecipe));
-            TestContext.WriteLine(ex.Message);
-        }
-
-        [Test]
-        [TestCase("Pizza Slice", 100, "01-01-2020", "02-01-2020", "09-26-2022")] // ALl Fields
-        [TestCase("Pizza Family", 800, "08-01-2022", "08-09-2022", null)] // Missing ArchivedDate
-        [TestCase("Egg Saled", 205, "08-04-2019", null, "08-25-2019")] // Missing PublishedDate
-        public static void InsertRecipe(string RecipeName, int Calories, DateTime DraftTime, DateTime? PublishedTime, DateTime? ArchivedTime)
-        {
-            RecipeName = $"{RecipeName} - {DateTime.Now}";
-            int staffId = GetFirstColumnFirstRowValueAsString("select top 1 StaffId from Staff");
-            Assume.That(staffId > 0, "No Staff returned from DB, can't run test");
-            int cuisineTypeId = GetFirstColumnFirstRowValueAsString("select top 1 CuisineTypeId from CuisineType");
-            Assume.That(cuisineTypeId > 0, "No CuisineTypes returned from DB, can't run test");
-            TestContext.WriteLine($"Recipe data should be: StaffId = {staffId}, CuisineTypeId = {cuisineTypeId}, RecipeName = {RecipeName}, Calories = {Calories}, DraftTime = {DraftTime}, PublishedTime = {PublishedTime}, ArchivedTime = {ArchivedTime}");
-
-            DataTable dt = SQLUtility.GetDataTable("select * from Recipe where RecipeId = 0");
-            dt.Rows.Add();
-            DataRow r = dt.Rows[0];
-            r["StaffId"] = staffId;
-            r["CuisineTypeId"] = cuisineTypeId;
-            r["RecipeName"] = RecipeName;
-            r["Calories"] = Calories;
-            r["DraftTime"] = DraftTime;
-            if (PublishedTime.HasValue) r["PublishedTime"] = PublishedTime;
-            if (ArchivedTime.HasValue) r["ArchivedTime"] = ArchivedTime;
-            Recipe.Save(dt);
-
-            DataTable dtNew = SQLUtility.GetDataTable($"select * from Recipe where RecipeName = '{RecipeName}'");
-            Assert.IsTrue(dtNew.Rows.Count > 0, $"Recipe with RecipeName = {RecipeName} not retunred from DB");
-            DataRow rNew = dtNew.Rows[0];
-            Assert.IsTrue((int)rNew["StaffId"] == staffId, $"StaffId Returned from db is {rNew["StaffId"]}");
-            Assert.IsTrue((int)rNew["CuisineTypeId"] == cuisineTypeId, $"CuisineTypeId Returned from db is {rNew["CuisineTypeId"]}");
-            Assert.IsTrue((string)rNew["RecipeName"] == RecipeName, $"RecipeName Returned from db is {rNew["RecipeName"]}");
-            Assert.IsTrue((int)rNew["Calories"] == Calories, $"Calories Returned from db is {rNew["Calories"]}");
-            Assert.IsTrue((DateTime)rNew["DraftTime"] == DraftTime, $"DraftTime Returned from db is {rNew["DraftTime"]}");
-            Assert.IsTrue(rNew["PublishedTime"].ToString() == PublishedTime.ToString(), $"PublishedTime Returned from db is {rNew["PublishedTime"]}");
-            Assert.IsTrue(rNew["ArchivedTime"].ToString() == ArchivedTime.ToString(), $"ArchivedTime Returned from db is {rNew["ArchivedTime"]}");
-            TestContext.WriteLine($"Recipe data returned from DB: StaffId = {rNew["StaffId"]}, CuisineTypeId = {rNew["CuisineTypeId"]}, RecipeName = {rNew["RecipeName"]}, Calories = {rNew["Calories"]}, DraftTime = {rNew["DraftTime"]}, PublishedTime = {rNew["PublishedTime"]}, ArchivedTime = {rNew["ArchivedTime"]}");
-        }
-
-        [Test]
-        public static void DeleteRecipeWithoutRelatedRecordsAndBusinessRules()
-        {
-            string sql = @"
-                select top 1 r.RecipeId
-                from Recipe r
-                left join CookBookRecipe cbr on cbr.RecipeId = r.RecipeId
-                left join MealCourseRecipe mcr on r.RecipeId = mcr.RecipeId
-                where cbr.CookBookRecipeId is null and mcr.MealCourseRecipeId is null
-                and (r.RecipeStatus <> 'Published' or datediff(day, r.ArchivedTime, getdate()) > 30)";
-            DataTable dt = SQLUtility.GetDataTable(sql);
-            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
-            int recipeId = (int)dt.Rows[0]["RecipeId"];
+            //Delete a Recipe it's ingredients and instructions, and also remove it from meals and cookbooks
+            string sql = "select top 1 r.RecipeId from Recipe r " +
+                "join RecipeIngredient rg on r.RecipeId = rg.RecipeId " +
+                "join RecipeInstruction rs on r.RecipeId = rs.RecipeId " +
+                "join CookBookRecipe cbr on r.RecipeId = cbr.RecipeId " +
+                "join MealCourseRecipe mcr on r.RecipeId = mcr.RecipeId";
+            int recipeId = Utils.GetFirstRowColumnIfInt(sql);
+            Assume.That(recipeId > 0, "DB didn't return a recipe that is related to RecipeIngredient, RecipeInstruction, CookBookRecipe and MealCourseRecipe");
             TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+            TestContext.WriteLine($" Deleting Recipe ({recipeId})... should not exists in DB anymore");
 
-            TestContext.WriteLine($"Deleting Recipe ({recipeId}), should not exists in DB anymore");
-            Recipe.Delete(dt);
+            Recipe.Delete(recipeId);
+            recipeId = Utils.GetFirstRowColumnIfInt($"select RecipeId from Recipe where RecipeId = {recipeId}");
 
-            DataTable dtNew = SQLUtility.GetDataTable($"select * from Recipe where RecipeId = {recipeId}");
-            Assert.IsTrue(dtNew.Rows.Count == 0, $"Recipe ({recipeId}) still exists in DB");
+            Assert.IsTrue(recipeId == 0, $"Recipe ({recipeId}) exists in DB");
             TestContext.WriteLine($"Recipe ({recipeId}) does not exists in DB");
         }
 
         [Test]
-        public static void DeletePublishedRecipe()
+        [TestCase("Recipe test 1", 25, "Draft")]
+        [TestCase("Recipe test 2", 45, "Published")]
+        [TestCase("Recipe test 3", 150, "Archived")]
+        public static void SaveRecipe(string recipeName, int calories, string recipeStatus)
         {
-            string sql = "select top 1 r.RecipeId from Recipe r where r.RecipeStatus = 'Published'";
-            DataTable dt = SQLUtility.GetDataTable(sql);
-            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
-            int recipeId = (int)dt.Rows[0]["RecipeId"];
-            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
-            TestContext.WriteLine($"Deleting Recipe {recipeId}");
+            DataTable dt = Recipe.Get(0);
+            dt.Rows.Add();
+            DataRow r = dt.Rows[0];
+            int StaffId = Utils.GetFirstRowColumnIfInt("select top 1 StaffId from Staff");
+            Assume.That(StaffId > 0, "No staff found in DB and it's needed in order to create a Recipe");
+            int cuisineTypeId = Utils.GetFirstRowColumnIfInt("select top 1 CuisineTypeId from CuisineType");
+            Assume.That(cuisineTypeId > 0, "No CuisineType found in DB and it's needed in order to create a Recipe");
+            TestContext.WriteLine("Creating new Recipe...");
 
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
-            TestContext.WriteLine(ex.Message);
+            r["StaffId"] = StaffId;
+            r["CuisineTypeId"] = cuisineTypeId;
+            r["RecipeName"] = recipeName + DateTime.Now;
+            r["Calories"] = calories;
+            r["RecipeStatus"] = recipeStatus;
+            Recipe.Save(dt);
+
+            int newRecipeId = (int)dt.Rows[0][0];
+            Assert.IsTrue(newRecipeId > 0, $"Recipe not created");
+            TestContext.WriteLine($"New recipe ({newRecipeId}) successfully created");
         }
 
         [Test]
-        public static void DeleteRecipeThatIsArchivedLessOrEqualTo30Days()
+        public void Clone()
         {
-            string sql = "select top 1 r.RecipeId from Recipe r where datediff(day, r.ArchivedTime, getdate()) <= 30";
-            DataTable dt = SQLUtility.GetDataTable(sql);
-            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
-            int recipeId = (int)dt.Rows[0]["RecipeId"];
-            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
-            TestContext.WriteLine($"Deleting Recipe {recipeId}");
+            string sql = "select top 1 r.RecipeId from Recipe r " +
+                "join RecipeIngredient rg on r.RecipeId = rg.RecipeId " +
+                "join RecipeInstruction rs on r.RecipeId = rs.RecipeId";
+            int recipeId = Utils.GetFirstRowColumnIfInt(sql);
+            Assume.That(recipeId > 0, "DB didn't return a recipe that is related to RecipeIngredient and RecipeInstruction");
+            int recipeIngredientsCount = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
+            int recipeInstructionsCount = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeInstruction where RecipeId = {recipeId}");
+            TestContext.WriteLine($"Recipe ({recipeId}) has {recipeIngredientsCount} Ingredients and {recipeInstructionsCount} Instructions");
+            TestContext.WriteLine($"Cloning Recipe...");
 
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
-            TestContext.WriteLine(ex.Message);
-        }
-        [Test]
-        public static void DeleteStaffWithRecipe()
-        {
-            DataTable dtStaff = SQLUtility.GetDataTable("select top 1 * from Staff s join Recipe r on s.StaffId = r.StaffId");
-            Assume.That(dtStaff.Rows.Count > 0, "No records returned from DB, can't do test");
-            int staffId = (int)dtStaff.Rows[0]["StaffId"];
-            TestContext.WriteLine($"Staff ({staffId}) exists in DB");
-            TestContext.WriteLine($"Deleting Staff {staffId}");
+            Recipe.Clone(recipeId);
+            string clonedRecipeName = Utils.GetFirstRowColumnIfString($"select RecipeName from Recipe where RecipeId = {recipeId}") + " - clone";
+            int clonedRecipeId = Utils.GetFirstRowColumnIfInt($"select RecipeId from Recipe where RecipeName = '{clonedRecipeName}'");
 
-            Exception ex = Assert.Throws<Exception>(() => Recipe.DeleteStaff(dtStaff));
-            TestContext.WriteLine(ex.Message);
+            Assert.IsTrue(clonedRecipeId > 0, "Recipe not cloned");
+            TestContext.WriteLine($"Cloned Recipe ({clonedRecipeId} - {clonedRecipeName}) has {recipeIngredientsCount} Ingredients and {recipeInstructionsCount} Instructions");
         }
 
         [Test]
-        public void GetListOfStaff()
+        public void GetRecipeIngredients()
         {
-            int dbStaffCount = GetFirstColumnFirstRowValueAsString("select count(*) from Staff");
-            Assume.That(dbStaffCount > 0, "0 records returned from DB, can't run test");
-            TestContext.WriteLine($"DB returned {dbStaffCount} records");
-            TestContext.WriteLine($"App should return {dbStaffCount} records");
+            int recipeId = Utils.GetFirstRowColumnIfInt("select top 1 r.RecipeId from Recipe r join RecipeIngredient rg on r.RecipeId = rg.RecipeId");
+            Assume.That(recipeId > 0, "DB didn't return a recipe has Ingredients");
+            int dbRecipeIngredientCount = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
+            TestContext.WriteLine($"DB RecipeIngredient Count is {dbRecipeIngredientCount}");
+            TestContext.WriteLine($"App RecipeIngredient Count should alos be {dbRecipeIngredientCount}");
 
-            int appStaffCount = Recipe.GetStaffList().Rows.Count;
+            int appRecipeIngredientCount = Recipe.GetRecipeIngredients(recipeId).Rows.Count;
 
-            Assert.IsTrue(dbStaffCount == appStaffCount, $"App returned {appStaffCount} records");
-            TestContext.WriteLine("$App returned {appStaffCount} records");
+            Assert.IsTrue(appRecipeIngredientCount == dbRecipeIngredientCount, $"App RecipeIngredient Count is {appRecipeIngredientCount}");
+            TestContext.WriteLine($"App RecipeIngredient Count is {appRecipeIngredientCount}");
         }
 
         [Test]
-        public void GetListOfCuisineTypes()
+        public void GetRecipeInstructions()
         {
-            int dbCuisineTypeListCount = GetFirstColumnFirstRowValueAsString("select count(*) from CuisineType");
-            Assume.That(dbCuisineTypeListCount > 0, "No records returned from DB, can't run test");
-            TestContext.WriteLine($"App should return {dbCuisineTypeListCount} records");
+            int recipeId = Utils.GetFirstRowColumnIfInt("select top 1 r.RecipeId from Recipe r join RecipeInstruction rs on r.RecipeId = rs.RecipeId");
+            Assume.That(recipeId > 0, "DB didn't return a recipe has Instructions");
+            int dbRecipeInstructionsCount = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeInstruction where RecipeId = {recipeId}");
+            TestContext.WriteLine($"DB RecipeInstruction Count is {dbRecipeInstructionsCount}");
+            TestContext.WriteLine($"App RecipeInstruction Count should alos be {dbRecipeInstructionsCount}");
 
-            int appCuisineTypeListCount = Recipe.GetCuisineTypeList().Rows.Count;
+            int appRecipeInstructionsCount = Recipe.GetRecipeInstructions(recipeId).Rows.Count;
 
-            Assert.IsTrue(dbCuisineTypeListCount == appCuisineTypeListCount, $"App returned {appCuisineTypeListCount} records");
-            TestContext.WriteLine($"App returned {appCuisineTypeListCount} records");
+            Assert.IsTrue(appRecipeInstructionsCount == dbRecipeInstructionsCount, $"App RecipeInstruction Count is {appRecipeInstructionsCount}");
+            TestContext.WriteLine($"App RecipeInstruction Count is {appRecipeInstructionsCount}");
         }
 
-        private static int GetRandomRecipeId()
+        [Test]
+        public void InsertRecipeIngredient()
         {
-            return GetFirstColumnFirstRowValueAsString("select top 1 RecipeId from Recipe");
-        }
+            DataTable dtRecipeIngredients = SQLUtility.GetDataTable("select RecipeId, RecipeIngredientId, IngredientId, UnitOfMeasureId, Amount, Seq from RecipeIngredient where RecipeId = (select top 1 RecipeId from RecipeIngredient group by RecipeId order by count(*) desc)");
+            int recipeId = Utils.GetFirstRowColumnIfInt(dtRecipeIngredients);
+            Assume.That(recipeId > 0, "DB didn't return Recipethat has Ingredients, can't run test");
+            int initialCountRecipeIngredients = dtRecipeIngredients.Rows.Count;
+            TestContext.WriteLine($"Recipe ({recipeId}) chosen for test, currently has {initialCountRecipeIngredients} Ingredient(s)");
+            TestContext.WriteLine("Deleting all Ingredients to re-insert them");
+            SQLUtility.ExecuteSQL($"delete RecipeIngredient where RecipeId = {recipeId}");
+            int tempCountRecipeIngredients = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
+            Assume.That(tempCountRecipeIngredients == 0, "RecipeIngredients not deleted, cant run test");
+            TestContext.WriteLine($"Recipe ({recipeId}) currently has {tempCountRecipeIngredients} Ingredient(s)");
 
-        private static int GetFirstColumnFirstRowValueAsString(string sql)
-        {
-            int n = 0;
-            DataTable dt = SQLUtility.GetDataTable(sql);
-            if (dt.Rows.Count > 0 && dt.Columns.Count > 0)
+
+            foreach (DataRow r in dtRecipeIngredients.Rows)
             {
-                if (dt.Rows[0][0] != null)
-                {
-                    int.TryParse(dt.Rows[0][0].ToString(), out n);
-                }
-
+                r["RecipeIngredientId"] = 0;
             }
-            return n;
+            Recipe.SaveRecipeChild(dtRecipeIngredients, "RecipeIngredient", recipeId);
+            int newCountRecipeIngredients = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
+
+            Assert.IsTrue(newCountRecipeIngredients == initialCountRecipeIngredients, $"Recipe ({initialCountRecipeIngredients}) should have {initialCountRecipeIngredients} RecipeIngredients");
+            TestContext.WriteLine($"Recipe ({recipeId}) has {newCountRecipeIngredients} RecipeIngredients");
         }
+
+        [Test]
+        public void InsertRecipeInstruction()
+        {
+            DataTable dtRecipeInstructions = SQLUtility.GetDataTable("select RecipeId, RecipeInstructionId, Seq, InstructionDesc from RecipeInstruction where RecipeId = (select top 1 RecipeId from RecipeInstruction group by RecipeId order by count(*) desc)");
+            int recipeId = Utils.GetFirstRowColumnIfInt(dtRecipeInstructions);
+            Assume.That(recipeId > 0, "DB didn't return Recipethat has Instructions, can't run test");
+            int initialCountRecipeInstructions = dtRecipeInstructions.Rows.Count;
+            TestContext.WriteLine($"Recipe ({recipeId}) chosen for test, currently has {initialCountRecipeInstructions} Instruction(s)");
+            TestContext.WriteLine("Deleting all Instructions to re-insert them");
+            SQLUtility.ExecuteSQL($"delete RecipeInstruction where RecipeId = {recipeId}");
+            int tempCountRecipeInstructions = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeInstruction where RecipeId = {recipeId}");
+            Assume.That(tempCountRecipeInstructions == 0, "RecipeInstructions not deleted, cant run test");
+            TestContext.WriteLine($"Recipe ({recipeId}) currently has {tempCountRecipeInstructions} Instruction(s)");
+
+
+            foreach (DataRow r in dtRecipeInstructions.Rows)
+            {
+                r["RecipeInstructionId"] = 0;
+            }
+            Recipe.SaveRecipeChild(dtRecipeInstructions, "RecipeInstruction", recipeId);
+            int newCountRecipeIngredients = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeInstruction where RecipeId = {recipeId}");
+
+            Assert.IsTrue(newCountRecipeIngredients == initialCountRecipeInstructions, $"Recipe ({initialCountRecipeInstructions}) should have {initialCountRecipeInstructions} RecipeInstructions");
+            TestContext.WriteLine($"Recipe ({recipeId}) has {newCountRecipeIngredients} RecipeInstructions");
+        }
+
+
+        [Test]
+        public void DeleteRecipeIngredients()
+        {
+            int recipeId = Utils.GetFirstRowColumnIfInt("select top 1 RecipeId from RecipeIngredient");
+            Assume.That(recipeId > 0, "DB didn't return Recipe that has Ingredients, can't run test");
+            DataTable dtRecipeIngredient = SQLUtility.GetDataTable($"select * from RecipeIngredient where RecipeId = {recipeId}");
+            int recipeIngredientCount = dtRecipeIngredient.Rows.Count;
+            TestContext.WriteLine($"Recipe {recipeId} has {recipeIngredientCount} Ingredient(s)");
+            TestContext.WriteLine("Deleting ingredients...");
+
+            foreach (DataRow r in dtRecipeIngredient.Rows)
+            {
+                Recipe.DeleteRecipeChild("RecipeIngredient", (int)r["RecipeIngredientId"]);
+            }
+            recipeIngredientCount = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
+
+            Assert.IsTrue(recipeIngredientCount == 0, $"Recipe should have 0 Ingredients but has {recipeIngredientCount}");
+            TestContext.WriteLine($"Recipe {recipeId} has {recipeIngredientCount} Ingredient(s)");
+        }
+
+
     }
 }

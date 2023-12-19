@@ -1,17 +1,25 @@
 create or alter proc dbo.RecipeClone(
     @RecipeId int output,
-    @Message varchar(500) = ''
+    @Message varchar(500) = '' output
 )
 as
 begin
     select @RecipeId = isnull(@RecipeId,0)
-    declare @Return int = 0, @NewRecipeId int
+    declare
+        @Return int = 0,
+        @NewRecipeId int,
+        @NewRecipeName varchar(100) = (select concat(RecipeName ,' - clone') from Recipe where RecipeId = @RecipeId)
 
-    if (@RecipeId is null)
+
+    if (@RecipeId is null or exists (select * from Recipe where RecipeName = @NewRecipeName))
     begin
-        select @Message = 'Please provide a RecipeId', @Return = 1
+        select @Return = 1, @Message = case
+            when @RecipeId is null then 'Please provide a RecipeId'
+            else 'Recipe cloned already, you can clone the already cloned recipe'
+        end
         goto finished
     end
+
 
     begin try
         begin transaction

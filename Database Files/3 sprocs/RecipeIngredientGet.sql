@@ -1,13 +1,11 @@
 create or alter procedure dbo.RecipeIngredientGet(
     @RecipeId int = 0,
-    @RecipeIngredientId int = 0,
     @Message varchar(500) = ''
 )
 as
 begin
     declare @Return int = 0
 
-    select @RecipeId = 0 where @RecipeIngredientId <> 0
     select
         ri.RecipeIngredientId,
         ri.RecipeId,
@@ -16,8 +14,7 @@ begin
         ri.Amount,
         ri.Seq
     from RecipeIngredient ri
-    where ri.RecipeIngredientId = @RecipeIngredientId
-    or ri.RecipeId = @RecipeId
+    where ri.RecipeId = @RecipeId
     order by ri.RecipeId, ri.Seq
 
     return @Return

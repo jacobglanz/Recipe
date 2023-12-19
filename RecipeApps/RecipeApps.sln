@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPUFramework", "..\..\CPUFr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPUWindowsFormsFramework", "..\..\CPUWindowsFormsFramework\CPUWindowsFormsFramework.csproj", "{C1589785-409B-46C6-975B-126CB7106929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeSystem", "..\RecipeSystem\RecipeSystem.csproj", "{FCC50AE6-8080-4A15-B5AA-EDD5EBA0744E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeSystem", "..\RecipeSystem\RecipeSystem.csproj", "{FCC50AE6-8080-4A15-B5AA-EDD5EBA0744E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeTest", "..\RecipeTest\RecipeTest.csproj", "{44D67D97-87FD-4CA1-988F-083C4262E5C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeTesting", "..\RecipeTest\RecipeTesting.csproj", "{44D67D97-87FD-4CA1-988F-083C4262E5C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,7 +10,7 @@ namespace RecipeWinForms
             InitializeComponent();
 
             gCookbooks.KeyDown += GCookbooks_KeyDown;
-            gCookbooks.CellContentDoubleClick += GCookbooks_CellContentDoubleClick;
+            gCookbooks.CellDoubleClick += GCookbooks_CellDoubleClick;
             btnNewCookbook.Click += BtnNewCookbook_Click;
             this.Activated += FrmCookbookList_Activated;
         }
@@ -40,7 +40,7 @@ namespace RecipeWinForms
                 OpenForm(gCookbooks.CurrentCell.RowIndex);
             }
         }
-        private void GCookbooks_CellContentDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        private void GCookbooks_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
             {

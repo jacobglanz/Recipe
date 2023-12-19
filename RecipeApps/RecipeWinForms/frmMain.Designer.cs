@@ -67,12 +67,12 @@
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] { mnuDashboard });
             mnuFile.Name = "mnuFile";
             mnuFile.Size = new Size(46, 25);
-            mnuFile.Text = "File";
+            mnuFile.Text = "&File";
             // 
             // mnuDashboard
             // 
             mnuDashboard.Name = "mnuDashboard";
-            mnuDashboard.Size = new Size(165, 26);
+            mnuDashboard.Size = new Size(180, 26);
             mnuDashboard.Text = "Dashoboard";
             // 
             // mnuRecipes
@@ -80,24 +80,24 @@
             mnuRecipes.DropDownItems.AddRange(new ToolStripItem[] { mnuRecipeList, mnuNewRecipe, mnuCloneRecipe });
             mnuRecipes.Name = "mnuRecipes";
             mnuRecipes.Size = new Size(75, 25);
-            mnuRecipes.Text = "Recipes";
+            mnuRecipes.Text = "&Recipes";
             // 
             // mnuRecipeList
             // 
             mnuRecipeList.Name = "mnuRecipeList";
-            mnuRecipeList.Size = new Size(170, 26);
+            mnuRecipeList.Size = new Size(180, 26);
             mnuRecipeList.Text = "Recipes";
             // 
             // mnuNewRecipe
             // 
             mnuNewRecipe.Name = "mnuNewRecipe";
-            mnuNewRecipe.Size = new Size(170, 26);
+            mnuNewRecipe.Size = new Size(180, 26);
             mnuNewRecipe.Text = "New Recipe";
             // 
             // mnuCloneRecipe
             // 
             mnuCloneRecipe.Name = "mnuCloneRecipe";
-            mnuCloneRecipe.Size = new Size(170, 26);
+            mnuCloneRecipe.Size = new Size(180, 26);
             mnuCloneRecipe.Text = "Clone Recipe";
             // 
             // mnuMeals
@@ -105,12 +105,12 @@
             mnuMeals.DropDownItems.AddRange(new ToolStripItem[] { mnuMealsList });
             mnuMeals.Name = "mnuMeals";
             mnuMeals.Size = new Size(63, 25);
-            mnuMeals.Text = "Meals";
+            mnuMeals.Text = "&Meals";
             // 
             // mnuMealsList
             // 
             mnuMealsList.Name = "mnuMealsList";
-            mnuMealsList.Size = new Size(121, 26);
+            mnuMealsList.Size = new Size(180, 26);
             mnuMealsList.Text = "Meals";
             // 
             // mnuCookbooks
@@ -118,7 +118,7 @@
             mnuCookbooks.DropDownItems.AddRange(new ToolStripItem[] { mnuCookbookList, mnuNewCookbook, mnuCookbookAutoCreate });
             mnuCookbooks.Name = "mnuCookbooks";
             mnuCookbooks.Size = new Size(100, 25);
-            mnuCookbooks.Text = "Cookbooks";
+            mnuCookbooks.Text = "&Cookbooks";
             // 
             // mnuCookbookList
             // 
@@ -143,12 +143,12 @@
             mnuDataMaintenance.DropDownItems.AddRange(new ToolStripItem[] { mnuEditDataMaintenance });
             mnuDataMaintenance.Name = "mnuDataMaintenance";
             mnuDataMaintenance.Size = new Size(147, 25);
-            mnuDataMaintenance.Text = "Data Maintenance";
+            mnuDataMaintenance.Text = "Data &Maintenance";
             // 
             // mnuEditDataMaintenance
             // 
             mnuEditDataMaintenance.Name = "mnuEditDataMaintenance";
-            mnuEditDataMaintenance.Size = new Size(142, 26);
+            mnuEditDataMaintenance.Size = new Size(180, 26);
             mnuEditDataMaintenance.Text = "Edit Data";
             // 
             // mnuWindow
@@ -156,18 +156,18 @@
             mnuWindow.DropDownItems.AddRange(new ToolStripItem[] { mnuTile, mnuCascade });
             mnuWindow.Name = "mnuWindow";
             mnuWindow.Size = new Size(80, 25);
-            mnuWindow.Text = "Window";
+            mnuWindow.Text = "&Window";
             // 
             // mnuTile
             // 
             mnuTile.Name = "mnuTile";
-            mnuTile.Size = new Size(137, 26);
+            mnuTile.Size = new Size(180, 26);
             mnuTile.Text = "Tile";
             // 
             // mnuCascade
             // 
             mnuCascade.Name = "mnuCascade";
-            mnuCascade.Size = new Size(137, 26);
+            mnuCascade.Size = new Size(180, 26);
             mnuCascade.Text = "Cascade";
             // 
             // tsMain

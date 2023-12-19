@@ -25,7 +25,12 @@ begin
     begin try
         begin transaction
         insert Cookbook(StaffId, CookBookName, Price, Active, CreatedDate)
-        select @StaffId, @CookBookName, Price = @RecipeCount * @PricePerRecipe, Active = 1, CreatedDate = getdate()
+        select
+            @StaffId,
+            @CookBookName,
+            Price = case when @RecipeCount * @PricePerRecipe < 1000 then @RecipeCount * @PricePerRecipe else 999.99 end,
+            Active = 1,
+            CreatedDate = getdate()
         select @CookbookId = scope_identity()
 
         insert CookBookRecipe(CookBookId, RecipeId, Seq)
@@ -44,3 +49,5 @@ begin
     finished:
     return @Return
 end
+go
+

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecipeSystem
 {
@@ -59,7 +54,7 @@ namespace RecipeSystem
             return SQLUtility.GetDataTable(cmd);
         }
 
-        public static void UpdateCookbookRecipes(DataTable dtCookbookRecipes, int cookbookId)
+        public static void SaveCookbookRecipes(DataTable dtCookbookRecipes, int cookbookId)
         {
             if (dtCookbookRecipes.Rows.Count == 0)
             {

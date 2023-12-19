@@ -46,36 +46,37 @@
             tblMain.RowCount = 2;
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblMain.Size = new Size(914, 600);
+            tblMain.Size = new Size(759, 542);
             tblMain.TabIndex = 3;
             // 
             // lstUsername
             // 
             lstUsername.Anchor = AnchorStyles.Bottom;
             lstUsername.FormattingEnabled = true;
-            lstUsername.Location = new Point(305, 247);
-            lstUsername.Margin = new Padding(3, 3, 3, 25);
+            lstUsername.Location = new Point(229, 216);
+            lstUsername.Margin = new Padding(3, 3, 3, 26);
             lstUsername.Name = "lstUsername";
-            lstUsername.Size = new Size(303, 28);
+            lstUsername.Size = new Size(300, 29);
             lstUsername.TabIndex = 0;
             // 
             // btnCreateCookbook
             // 
             btnCreateCookbook.Anchor = AnchorStyles.Top;
-            btnCreateCookbook.Location = new Point(381, 303);
+            btnCreateCookbook.BackColor = Color.Gainsboro;
+            btnCreateCookbook.Location = new Point(309, 274);
             btnCreateCookbook.Name = "btnCreateCookbook";
-            btnCreateCookbook.Size = new Size(152, 40);
+            btnCreateCookbook.Size = new Size(140, 50);
             btnCreateCookbook.TabIndex = 1;
-            btnCreateCookbook.Text = "Create Cookbook";
-            btnCreateCookbook.UseVisualStyleBackColor = true;
+            btnCreateCookbook.Text = "&Create Cookbook";
+            btnCreateCookbook.UseVisualStyleBackColor = false;
             // 
             // frmCookbookAutoCreate
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(914, 600);
+            ClientSize = new Size(759, 542);
             Controls.Add(tblMain);
-            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             Margin = new Padding(3, 4, 3, 4);
             Name = "frmCookbookAutoCreate";
             Text = "Auto-Create a Cookbook";

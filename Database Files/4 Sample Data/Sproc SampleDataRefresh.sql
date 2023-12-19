@@ -1,4 +1,4 @@
-create or alter proc dbo.RefreshSampleData
+create or alter proc dbo.DataUpdate
 as
 begin
    delete CookBookRecipe

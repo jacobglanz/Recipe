@@ -46,7 +46,7 @@ namespace RecipeSystem
 
         public static void RefreshSampleData()
         {
-            SqlCommand cmd = SQLUtility.GetSQLCommand("RefreshSampleData");
+            SqlCommand cmd = SQLUtility.GetSQLCommand("DataUpdate");
             SQLUtility.ExecuteSQL(cmd);
         }
 

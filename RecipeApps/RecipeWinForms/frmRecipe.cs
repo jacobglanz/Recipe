@@ -31,22 +31,18 @@ namespace RecipeWinForms
         public void LoadForm(int pkId)
         {
             recipeId = pkId;
-            LoadLists();
+            LoadData();
             SetFormData();
             SetButtons();
         }
 
-        private void SetFormData(bool refresh = false)
+        private void SetFormData()
         {
-            if (refresh)
-            {
-                recipeId = DataMaintenance.GetValueFromFirstRowAsInt(dtRecipe, "RecipeId");
-            }
             this.Tag = recipeId;
             this.Text = Recipe.GetDesc(recipeId, dtRecipe);
         }
 
-        private void LoadLists()
+        private void LoadData()
         {
             dtStaff = DataMaintenance.GetAll(DataMaintenance.DataType.Staff);
             dtCuisineType = DataMaintenance.GetAll(DataMaintenance.DataType.CuisineType);
@@ -55,18 +51,19 @@ namespace RecipeWinForms
             dtIngredients = DataMaintenance.GetAll(DataMaintenance.DataType.Ingredient);
             dtUnitOfMeasure = DataMaintenance.GetAll(DataMaintenance.DataType.UnitOfMeasure, true);
             dtRecipe = Recipe.Get(recipeId);
-            bindSource.DataSource = dtRecipe;
             if (recipeId < 1)
             {
                 dtRecipe.Rows.Add();
             }
-
-            gIngredients.DataSource = dtRecipeIngredients;
-            gInstructions.DataSource = dtRecipeInstructions;
         }
 
         private void BindData()
         {
+            bindSource.DataSource = dtRecipe;
+
+            gIngredients.DataSource = dtRecipeIngredients;
+            gInstructions.DataSource = dtRecipeInstructions;
+
             WindowsFormsUtility.SetControlBinding(txtRecipeName, bindSource);
             WindowsFormsUtility.SetControlBinding(txtCalories, bindSource);
             WindowsFormsUtility.SetControlBinding(lblRecipeStatus, bindSource);
@@ -100,7 +97,8 @@ namespace RecipeWinForms
             try
             {
                 Recipe.Save(dtRecipe);
-                SetFormData(true);
+                recipeId = DataMaintenance.GetValueFromFirstRowAsInt(dtRecipe, "RecipeId");
+                SetFormData();
                 SetButtons();
             }
             catch (Exception ex)
@@ -125,7 +123,8 @@ namespace RecipeWinForms
             Application.UseWaitCursor = true;
             try
             {
-                Recipe.Delete(dtRecipe);
+                Recipe.Delete(recipeId);
+                ((frmMain)this.MdiParent).OpenForm(typeof(frmRecipeList));
                 this.Close();
             }
             catch (Exception ex)
@@ -146,7 +145,7 @@ namespace RecipeWinForms
             }
         }
 
-        private void SaveRecipeChild(DataTable dt)
+        private void SaveRecipeChild(DataTable dt, string tableName)
         {
             var rows = dt.Select("", "Seq ASC");
             int seq = 1;
@@ -154,7 +153,7 @@ namespace RecipeWinForms
             {
                 if ((int)r["Seq"] != seq)
                 {
-                    MessageBox.Show("Seq out of order, make sure to start from 1 and not skip any number");
+                    MessageBox.Show("Seq not correct, make sure to start from 1 and not skip any number");
                     return;
                 }
                 seq++;
@@ -163,7 +162,7 @@ namespace RecipeWinForms
             try
             {
                 this.Cursor = Cursors.WaitCursor;
-                Recipe.SaveRecipeChild(dtRecipeIngredients, "RecipeIngredient", recipeId);
+                Recipe.SaveRecipeChild(dt, tableName, recipeId);
             }
             catch (Exception ex)
             {
@@ -202,10 +201,6 @@ namespace RecipeWinForms
                     this.Cursor = Cursors.Default;
                 }
             }
-            else
-            {
-                MessageBox.Show("Cannot delete before saving", Application.ProductName);
-            }
         }
 
 
@@ -223,11 +218,11 @@ namespace RecipeWinForms
         }
         private void BtnSaveInstructions_Click(object? sender, EventArgs e)
         {
-            SaveRecipeChild(dtRecipeInstructions);
+            SaveRecipeChild(dtRecipeInstructions, "RecipeInstruction");
         }
         private void BtnSaveIngredients_Click(object? sender, EventArgs e)
         {
-            SaveRecipeChild(dtRecipeIngredients);
+            SaveRecipeChild(dtRecipeIngredients, "RecipeIngredient");
         }
         private void GInstructions_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {

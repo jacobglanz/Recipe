@@ -61,7 +61,7 @@ namespace RecipeWinForms
                 DataMaintenance.DataType.CuisineType => "Cuisine and all related recipes?",
                 DataMaintenance.DataType.Ingredient => "Ingredient and remove it from recipes?",
                 DataMaintenance.DataType.UnitOfMeasure => "Measurement and remove it from recipes' ingredients?",
-                DataMaintenance.DataType.Course => "Course and recmove it from Meals?",
+                DataMaintenance.DataType.Course => "Course and remove it from Meals?",
             };
             DialogResult res = MessageBox.Show(deletePrompt, Application.ProductName, MessageBoxButtons.YesNo);
             if (res == DialogResult.No)
@@ -110,9 +110,12 @@ namespace RecipeWinForms
 
         private void GData_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (gData.Columns[e.ColumnIndex].Name == deleteColName)
+            if (gData.Columns[e.ColumnIndex].Name == deleteColName && e.RowIndex > -1)
             {
-                Delete(e.RowIndex);
+                if (gData.Rows[e.RowIndex].Cells[currentDataType + "id"].Value.ToString() != "")
+                {
+                    Delete(e.RowIndex);
+                }
             }
         }
         private void BtnSave_Click(object? sender, EventArgs e)
@@ -125,11 +128,11 @@ namespace RecipeWinForms
             {
                 if (LoadGrid((DataMaintenance.DataType)rb.Tag))
                 {
-                    currentRB = rb;
+                    currentRB = rb; //switch to new
                 }
                 else
                 {
-                    currentRB.Checked = true;
+                    currentRB.Checked = true; //change back bacause or error at unsaved table
                 }
             }
         }

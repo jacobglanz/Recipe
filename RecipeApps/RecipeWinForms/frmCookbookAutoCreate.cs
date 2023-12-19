@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 
 namespace RecipeWinForms
 {
@@ -25,8 +17,11 @@ namespace RecipeWinForms
             {
                 this.Cursor = Cursors.WaitCursor;
                 DataTable dtCookbook = Cookbook.CreateForUser((int)lstUsername.SelectedValue);
-                ((frmMain)MdiParent).OpenForm(typeof(frmCookbook), (int)dtCookbook.Rows[0]["CookbookId"]);
-                this.Close();
+                if (dtCookbook.Rows.Count == 1 && dtCookbook.Columns.Contains("CookbookId"))
+                {
+                    ((frmMain)MdiParent).OpenForm(typeof(frmCookbook), (int)dtCookbook.Rows[0]["CookbookId"]);
+                    this.Close();
+                }                
             }
             catch (Exception ex)
             {

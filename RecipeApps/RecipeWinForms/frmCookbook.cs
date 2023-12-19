@@ -18,7 +18,6 @@ namespace RecipeWinForms
             btnSave.Click += BtnSave_Click;
             btnDelete.Click += BtnDelete_Click;
             btnSaveRecipes.Click += BtnSaveRecipes_Click;
-            gRecipes.CellDoubleClick += GRecipes_CellDoubleClick;
             gRecipes.CellContentClick += GRecipes_CellContentClick;
             this.Shown += FrmCookbook_Shown;
         }
@@ -26,38 +25,36 @@ namespace RecipeWinForms
         public void LoadForm(int pkId)
         {
             cookBookId = pkId;
-            LoadCookbook();
-            dtCookbookRecipes = Cookbook.GetCookbookRecipes(cookBookId);
-            gRecipes.DataSource = dtCookbookRecipes;
-            LoadListData();
-            BindFormControls();
+            LoadData();
+            SetFormData();
+            BindData();
             SetButtonsEnabled();
         }
 
-        private void LoadCookbook(bool refresh = false)
+        private void LoadData()
         {
-            if (refresh)
-            {
-                cookBookId = DataMaintenance.GetValueFromFirstRowAsInt(dtCookBook, "CookbookId");
-            }
             dtCookBook = Cookbook.Get(cookBookId);
             if (dtCookBook.Rows.Count == 0)
             {
                 dtCookBook.Rows.Add();
             }
-            cookbookBindSource.DataSource = dtCookBook;
-            this.Tag = cookBookId;
-            this.Text = Cookbook.GetDesc(cookBookId, dtCookBook);
-        }
 
-        private void LoadListData()
-        {
+            dtCookbookRecipes = Cookbook.GetCookbookRecipes(cookBookId);
             dtStaff = DataMaintenance.GetAll(DataMaintenance.DataType.Staff);
             dtAllRecipes = Recipe.GetAll();
         }
 
-        private void BindFormControls()
+        private void SetFormData()
         {
+            this.Tag = cookBookId;
+            this.Text = Cookbook.GetDesc(cookBookId, dtCookBook);
+        }
+
+        private void BindData()
+        {
+            cookbookBindSource.DataSource = dtCookBook;
+            gRecipes.DataSource = dtCookbookRecipes;
+
             WindowsFormsUtility.SetControlBinding(txtCookBookName, cookbookBindSource);
             WindowsFormsUtility.SetControlBinding(txtPrice, cookbookBindSource);
             WindowsFormsUtility.SetControlBinding(lblCreatedDate, cookbookBindSource);
@@ -82,8 +79,10 @@ namespace RecipeWinForms
                 {
                     this.Cursor = Cursors.WaitCursor;
                     Cookbook.Save(dtCookBook);
-                    LoadCookbook(true);
+                    cookBookId = DataMaintenance.GetValueFromFirstRowAsInt(dtCookBook, "CookbookId");
                     SetButtonsEnabled();
+                    cookbookBindSource.ResetBindings(false);
+                    SetFormData();
                 }
                 catch (Exception ex)
                 {
@@ -96,7 +95,7 @@ namespace RecipeWinForms
             }
             else
             {
-                MessageBox.Show("Invalide price, format should be $###.##");
+                MessageBox.Show("Invalid price");
             }
         }
 
@@ -112,8 +111,8 @@ namespace RecipeWinForms
             {
                 this.Cursor = Cursors.WaitCursor;
                 Cookbook.Delete(cookBookId);
-                this.Close();
                 ((frmMain)this.MdiParent).OpenForm(typeof(frmCookbookList));
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -130,7 +129,7 @@ namespace RecipeWinForms
             try
             {
                 this.Cursor = Cursors.WaitCursor;
-                Cookbook.UpdateCookbookRecipes(dtCookbookRecipes, cookBookId);
+                Cookbook.SaveCookbookRecipes(dtCookbookRecipes, cookBookId);
             }
             catch (Exception ex)
             {
@@ -183,19 +182,17 @@ namespace RecipeWinForms
         {
             Save();
         }
-        private void GRecipes_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > -1)
-            {
-                DeleteCookbookRecipe(e.RowIndex);
-            }
-        }
         private void GRecipes_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (gRecipes.Columns[e.ColumnIndex].Name == deleteColName && e.RowIndex > -1)
             {
-                DeleteCookbookRecipe(e.RowIndex);
+                if (gRecipes.Rows[e.RowIndex].Cells["CookbookRecipeId"].Value.ToString() != "")
+                {
+                    DeleteCookbookRecipe(e.RowIndex);
+                }
             }
         }
+
+
     }
 }

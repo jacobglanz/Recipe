@@ -16,6 +16,7 @@ namespace RecipeSystem
             SQLUtility.SetParamValue(cmd, "@RecipeName", searchInput);
             return SQLUtility.GetDataTable(cmd);
         }
+        
         public static DataTable GetAll()
         {
             return Get(0, true);
@@ -30,9 +31,8 @@ namespace RecipeSystem
             SQLUtility.SaveDateRow(dtRecipe.Rows[0], "RecipeUpdate");
         }
 
-        public static void Delete(DataTable dtRecipe)
+        public static void Delete(int recipeId)
         {
-            int recipeId = (int)dtRecipe.Rows[0]["RecipeId"];
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeDelete");
             SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
             SQLUtility.ExecuteSQL(cmd);
@@ -54,7 +54,6 @@ namespace RecipeSystem
         {
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeIngredientGet");
             SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
-            SQLUtility.SetParamValue(cmd, "@RecipeIngredientId", ingredientId);
             return SQLUtility.GetDataTable(cmd);
         }
 

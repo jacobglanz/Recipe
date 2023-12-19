@@ -38,21 +38,23 @@
             // 
             lstRecipeName.Anchor = AnchorStyles.Bottom;
             lstRecipeName.FormattingEnabled = true;
-            lstRecipeName.Location = new Point(415, 260);
-            lstRecipeName.Margin = new Padding(3, 3, 3, 25);
+            lstRecipeName.Location = new Point(313, 206);
+            lstRecipeName.Margin = new Padding(2, 3, 2, 21);
             lstRecipeName.Name = "lstRecipeName";
-            lstRecipeName.Size = new Size(303, 33);
+            lstRecipeName.Size = new Size(300, 29);
             lstRecipeName.TabIndex = 0;
             // 
             // btnClone
             // 
             btnClone.Anchor = AnchorStyles.Top;
-            btnClone.Location = new Point(490, 321);
+            btnClone.BackColor = Color.Gainsboro;
+            btnClone.Location = new Point(393, 270);
+            btnClone.Margin = new Padding(2, 3, 2, 3);
             btnClone.Name = "btnClone";
-            btnClone.Size = new Size(152, 40);
+            btnClone.Size = new Size(140, 50);
             btnClone.TabIndex = 1;
-            btnClone.Text = "Clone";
-            btnClone.UseVisualStyleBackColor = true;
+            btnClone.Text = "&Clone";
+            btnClone.UseVisualStyleBackColor = false;
             // 
             // tblMain
             // 
@@ -62,21 +64,22 @@
             tblMain.Controls.Add(btnClone, 0, 1);
             tblMain.Dock = DockStyle.Fill;
             tblMain.Location = new Point(0, 0);
+            tblMain.Margin = new Padding(2, 3, 2, 3);
             tblMain.Name = "tblMain";
             tblMain.RowCount = 2;
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblMain.Size = new Size(1133, 637);
-            tblMain.TabIndex = 2;
+            tblMain.Size = new Size(927, 535);
+            tblMain.TabIndex = 0;
             // 
             // frmRecipeClone
             // 
-            AutoScaleDimensions = new SizeF(11F, 25F);
+            AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1133, 637);
+            ClientSize = new Size(927, 535);
             Controls.Add(tblMain);
-            Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            Margin = new Padding(5);
+            Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Margin = new Padding(4);
             Name = "frmRecipeClone";
             Text = "Clone a Recipe";
             tblMain.ResumeLayout(false);
