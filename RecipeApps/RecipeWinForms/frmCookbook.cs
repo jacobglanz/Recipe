@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using RecipeSystem;
+using System.Data;
 
 namespace RecipeWinForms
 {
@@ -34,6 +35,8 @@ namespace RecipeWinForms
         private void LoadData()
         {
             dtCookBook = Cookbook.Get(cookBookId);
+
+            dtCookBook.Rows.Add();
             if (dtCookBook.Rows.Count == 0)
             {
                 dtCookBook.Rows.Add();

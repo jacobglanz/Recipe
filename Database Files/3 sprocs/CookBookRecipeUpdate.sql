@@ -11,6 +11,14 @@ begin
 
 	select @CookBookRecipeId = isnull(@CookBookRecipeId,0)
 
+	if @Seq is null
+	begin
+		select
+			@Return = 1,
+			@Message = (select concat('Recipe ', RecipeName, ' Seq Requiered' ) from Recipe where RecipeId = @RecipeId)
+		goto finished
+	end
+
 	if @CookBookRecipeId = 0
 	begin
 		insert CookBookRecipe(CookBookId, RecipeId, Seq)
@@ -25,5 +33,6 @@ begin
         where CookBookRecipeId = @CookBookRecipeId
 	end
 
+	finished:
 	return @Return
 end

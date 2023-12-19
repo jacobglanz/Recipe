@@ -37,8 +37,9 @@
             // lstRecipeName
             // 
             lstRecipeName.Anchor = AnchorStyles.Bottom;
+            lstRecipeName.DropDownStyle = ComboBoxStyle.DropDownList;
             lstRecipeName.FormattingEnabled = true;
-            lstRecipeName.Location = new Point(313, 206);
+            lstRecipeName.Location = new Point(313, 217);
             lstRecipeName.Margin = new Padding(2, 3, 2, 21);
             lstRecipeName.Name = "lstRecipeName";
             lstRecipeName.Size = new Size(300, 29);

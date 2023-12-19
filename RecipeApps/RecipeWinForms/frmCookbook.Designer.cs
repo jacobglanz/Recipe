@@ -95,28 +95,30 @@
             // btnDelete
             // 
             btnDelete.Anchor = AnchorStyles.Left;
+            btnDelete.BackColor = Color.Gainsboro;
             btnDelete.Location = new Point(163, 10);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(140, 50);
             btnDelete.TabIndex = 1;
             btnDelete.Text = "&Delete";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             // 
             // btnSave
             // 
             btnSave.Anchor = AnchorStyles.None;
+            btnSave.BackColor = Color.Gainsboro;
             btnSave.Location = new Point(10, 10);
             btnSave.Margin = new Padding(10);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(140, 50);
             btnSave.TabIndex = 0;
             btnSave.Text = "&Save";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             // 
             // btnSaveRecipes
             // 
             btnSaveRecipes.Anchor = AnchorStyles.Left;
-            btnSaveRecipes.BackColor = Color.Gainsboro;
+            btnSaveRecipes.BackColor = Color.Transparent;
             btnSaveRecipes.Location = new Point(10, 279);
             btnSaveRecipes.Margin = new Padding(10);
             btnSaveRecipes.Name = "btnSaveRecipes";
@@ -237,6 +239,7 @@
             // lstUserName
             // 
             lstUserName.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            lstUserName.DropDownStyle = ComboBoxStyle.DropDownList;
             lstUserName.FormattingEnabled = true;
             lstUserName.Location = new Point(163, 120);
             lstUserName.Name = "lstUserName";

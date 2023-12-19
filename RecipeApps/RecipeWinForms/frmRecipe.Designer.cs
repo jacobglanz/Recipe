@@ -153,6 +153,7 @@
             // lstUserName
             // 
             lstUserName.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            lstUserName.DropDownStyle = ComboBoxStyle.DropDownList;
             lstUserName.FormattingEnabled = true;
             lstUserName.Location = new Point(124, 123);
             lstUserName.Name = "lstUserName";
@@ -180,6 +181,7 @@
             // lstCuisineTypeName
             // 
             lstCuisineTypeName.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            lstCuisineTypeName.DropDownStyle = ComboBoxStyle.DropDownList;
             lstCuisineTypeName.FormattingEnabled = true;
             lstCuisineTypeName.Location = new Point(124, 156);
             lstCuisineTypeName.Name = "lstCuisineTypeName";
