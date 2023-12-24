@@ -5,8 +5,8 @@ as
 begin
     begin try
         begin transaction
-        delete CookBookRecipe where CookBookId = @CookbookId
-        delete CookBook where CookBookId = @CookbookId
+        delete CookbookRecipe where CookbookId = @CookbookId
+        delete Cookbook where CookbookId = @CookbookId
         commit
     end try
     begin catch
@@ -16,5 +16,3 @@ begin
 end
 go
 
-
--- exec CookbookDelete @CookbookId = 106

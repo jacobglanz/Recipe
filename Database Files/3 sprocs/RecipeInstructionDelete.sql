@@ -6,7 +6,8 @@ as
 begin
 	declare @Return int = 0
 
-	delete RecipeInstruction where RecipeInstructionId = @RecipeInstructionId
+	delete RecipeInstruction 
+	where RecipeInstructionId = @RecipeInstructionId
 
 	return @Return
 end

@@ -22,3 +22,10 @@ begin
 
 	return @Return
 end
+go 
+
+/*
+exec CuisineTypeUpdate @CuisineTypeId = null, @CuisineTypeName = 'Test Cuisine Type'
+select * from CuisineType where CuisineTypeName = 'Test Cuisine Type'
+delete CuisineType where CuisineTypeName = 'Test Cuisine Type'
+*/

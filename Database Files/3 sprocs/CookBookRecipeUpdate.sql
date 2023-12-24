@@ -1,6 +1,6 @@
-create or alter procedure dbo.CookBookRecipeUpdate(
-	@CookBookRecipeId int output,
-	@CookBookId int,
+create or alter procedure dbo.CookbookRecipeUpdate(
+	@CookbookRecipeId int output,
+	@CookbookId int,
 	@RecipeId int,
 	@Seq int,
 	@Message varchar(500) = '' output
@@ -9,28 +9,28 @@ as
 begin
 	declare @Return int = 0
 
-	select @CookBookRecipeId = isnull(@CookBookRecipeId,0)
+	select @CookbookRecipeId = isnull(@CookbookRecipeId,0)
 
 	if @Seq is null
 	begin
 		select
 			@Return = 1,
-			@Message = (select concat('Recipe ', RecipeName, ' Seq Requiered' ) from Recipe where RecipeId = @RecipeId)
+			@Message = (select concat('Recipe ', RecipeName, ' Seq Required' ) from Recipe where RecipeId = @RecipeId)
 		goto finished
 	end
 
-	if @CookBookRecipeId = 0
+	if @CookbookRecipeId = 0
 	begin
-		insert CookBookRecipe(CookBookId, RecipeId, Seq)
-		values (@CookBookId, @RecipeId, @Seq)
-		select @CookBookRecipeId = scope_identity()
+		insert CookbookRecipe(CookbookId, RecipeId, Seq)
+		values (@CookbookId, @RecipeId, @Seq)
+		select @CookbookRecipeId = scope_identity()
 	end
 	else
 	begin
-        update CookBookRecipe set
+        update CookbookRecipe set
         RecipeId = @RecipeId,
         Seq = @Seq
-        where CookBookRecipeId = @CookBookRecipeId
+        where CookbookRecipeId = @CookbookRecipeId
 	end
 
 	finished:

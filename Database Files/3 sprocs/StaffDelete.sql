@@ -17,13 +17,13 @@ begin
         insert @tMeal(MealId)
         select MealId from Meal where StaffId = @StaffId
 
-        delete CookBookRecipe where CookBookRecipeId in (
-            select distinct cbr.CookBookRecipeId from CookBookRecipe cbr
-            join CookBook cb on cb.CookBookId = cbr.CookBookId
+        delete CookbookRecipe where CookbookRecipeId in (
+            select distinct cbr.CookbookRecipeId from CookbookRecipe cbr
+            join Cookbook cb on cb.CookbookId = cbr.CookbookId
             left join @tRecipe r on r.RecipeId = cbr.RecipeId
             where cb.StaffId = @StaffId or r.RecipeId is not null
         )
-        delete CookBook where StaffId = @StaffId
+        delete Cookbook where StaffId = @StaffId
         delete RecipeInstruction where RecipeId in (select RecipeId from @tRecipe)
         delete RecipeIngredient where RecipeId in (select RecipeId from @tRecipe)
         delete MealCourseRecipe where MealCourseRecipeId in (

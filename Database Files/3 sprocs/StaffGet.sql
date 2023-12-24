@@ -8,11 +8,11 @@ as
 begin
     declare @Return int = 0
 
-    select StaffId, FirstName, LastName, UserName--, StaffName = FirstName + ' ' + LastName
+    select StaffId, FirstName, LastName, UserName
     from Staff
     where StaffId = @StaffId
     or @All = 1
-    union select 0, '', '', ''--, ''
+    union select 0, '', '', ''
     where @IncludeBlank = 1
     order by StaffId
 
