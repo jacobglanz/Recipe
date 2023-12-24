@@ -1,7 +1,7 @@
 use HeartyHearthDB
    go
-   delete CookBookRecipe
-   delete CookBook
+   delete CookbookRecipe
+   delete Cookbook
    delete MealCourseRecipe
    delete MealCourse
    delete RecipeInstruction
@@ -209,20 +209,20 @@ insert MealCourseRecipe(RecipeId, MealCourseId, MainDish)
 go
 
 ;with x as (
-   select CookBookName = 'Treats for two', Price = 30, Active = 1, Username = 'jacob123', CreatedDate = getdate()
+   select CookbookName = 'Treats for two', Price = 30, Active = 1, Username = 'jacob123', CreatedDate = getdate()
    union select 'The best of the 20''s', 50, 1, 'jacob123', getdate()
    union select 'i''m hungry', 19.9, 0, 'JDow9856', getdate()
    union select 'American food line', 19.99, 0, 'JDow9856', getdate()
    union select 'Canada food line', 19.99, 0, 'MosheW546', getdate()
 )
-insert CookBook(StaffId, CookBookName, Price, Active, CreatedDate)
-   select s.StaffId, x.CookBookName, x.Price, x.Active, x.CreatedDate
+insert Cookbook(StaffId, CookbookName, Price, Active, CreatedDate)
+   select s.StaffId, x.CookbookName, x.Price, x.Active, x.CreatedDate
    from x
    join Staff s on x.Username = s.Username
 go
 
 ;with x as(
-   select CookBookName = 'Treats for two', RecipeName = 'Chocolate Chip Cookies', Seq = 1
+   select CookbookName = 'Treats for two', RecipeName = 'Chocolate Chip Cookies', Seq = 1
    union select 'Treats for two', 'Apple Yogurt Smoothie', 2
    union select 'American food line', 'Apple Yogurt Smoothie', 3
    union select 'The best of the 20''s', 'Apple Yogurt Smoothie', 3
@@ -239,9 +239,9 @@ go
    union select 'i''m hungry', 'Cheese Bread', 1
    union select 'i''m hungry', 'Butter Muffins', 2
 )
-insert CookBookRecipe(CookBookId, RecipeId, Seq)
-   select cb.CookBookId, r.RecipeId, x.Seq
+insert CookbookRecipe(CookbookId, RecipeId, Seq)
+   select cb.CookbookId, r.RecipeId, x.Seq
    from x
-   join CookBook cb on x.CookBookName = cb.CookBookName
+   join Cookbook cb on x.CookbookName = cb.CookbookName
    join Recipe r on x.RecipeName = r.RecipeName
 go
