@@ -15,4 +15,4 @@ begin
 end
 go
 
--- select *, dbo.MealCourseCount(MealId) from Meal
+select top 20 *, dbo.MealCourseCount(MealId) from Meal

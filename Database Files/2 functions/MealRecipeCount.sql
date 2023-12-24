@@ -5,7 +5,7 @@ returns int
 begin
     declare @Value int = 0
 
-    select @Value += count(*)
+    select @Value = count(*)
     from Meal m
     join MealCourse mc
     on m.MealId = mc.MealId
@@ -17,4 +17,4 @@ begin
 end
 go
 
--- select *, dbo.MealRecipeCount(MealId) from Meal
+select top 20 *, dbo.MealRecipeCount(MealId) from Meal

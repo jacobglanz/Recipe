@@ -1,20 +1,18 @@
 create or alter function dbo.CookbookRecipeCount(
-    @CookBookId int
+    @CookbookId int
 )
 returns int
 begin
     declare @Value int = 0
 
     select @Value = count(*)
-    from Recipe r
-    where r.RecipeId in (
-        select cbr.RecipeId
-        from CookBookRecipe cbr
-        where cbr.CookBookId = @CookBookId
-    )
+    from Cookbook b
+	join CookbookRecipe r
+	on b.CookbookId = r.CookbookId
+	where b.CookbookId = @CookbookId
 
     return @Value
 end
 go
 
--- select *, dbo.CookbookRecipeCount(CookBookId) from CookBook
+select *, dbo.CookbookRecipeCount(CookbookId) from Cookbook
