@@ -1,7 +1,7 @@
 use HeartyHearthDB
     go
-    drop table if exists CookBookRecipe
-    drop table if exists CookBook
+    drop table if exists CookbookRecipe
+    drop table if exists Cookbook
     drop table if exists MealCourseRecipe
     drop table if exists RecipeInstruction
     drop table if exists RecipeIngredient
@@ -150,30 +150,30 @@ create table dbo.MealCourseRecipe(
     constraint u_MealCourse_Recipe unique(MealCourseId, RecipeId)
 )
 go
-create table dbo.CookBook(
-    CookBookId int not null identity primary key,
+create table dbo.Cookbook(
+    CookbookId int not null identity primary key,
     StaffId int not null
-        constraint f_Staff_CookBook foreign key references Staff(StaffId),
-    CookBookName varchar(50) not null
-        constraint ck_CookBook_CookBookName_cannot_be_blank check(CookBookName <> '')
-        constraint u_CookBook_CookBookName unique,
+        constraint f_Staff_Cookbook foreign key references Staff(StaffId),
+    CookbookName varchar(50) not null
+        constraint ck_Cookbook_CookbookName_cannot_be_blank check(CookbookName <> '')
+        constraint u_Cookbook_CookbookName unique,
     Price decimal(5,2) not null
-        constraint ck_CookBook_Price_must_be_more_then_0 check(Price > 0.00),
+        constraint ck_Cookbook_Price_must_be_more_then_0 check(Price > 0.00),
     Active bit not null
-        constraint d_CookBook_Active default 1,
-    CookBookImage as concat('CookBook_', replace(CookBookName, ' ', '_'), '.jpg'),
+        constraint d_Cookbook_Active default 1,
+    CookbookImage as concat('Cookbook_', replace(CookbookName, ' ', '_'), '.jpg'),
     CreatedDate date not null
-        constraint ck_CookBook_CreatedDate_cannot_be_in_the_future check(CreatedDate <= getdate())
+        constraint ck_Cookbook_CreatedDate_cannot_be_in_the_future check(CreatedDate <= getdate())
 )
 go
-create table CookBookRecipe(
-    CookBookRecipeId int not null identity primary key,
-    CookBookId int not null
-        constraint f_CookBook_CookBookRecipe foreign key references CookBook(CookBookId),
+create table CookbookRecipe(
+    CookbookRecipeId int not null identity primary key,
+    CookbookId int not null
+        constraint f_Cookbook_CookbookRecipe foreign key references Cookbook(CookbookId),
     RecipeId int not null
-        constraint f_Recipe_CookBookRecipe foreign key references Recipe(RecipeId),
+        constraint f_Recipe_CookbookRecipe foreign key references Recipe(RecipeId),
     Seq int not null
-        constraint ck_CookBookRecipe_Seq_must_be_more_then_0 check(Seq > 0),
-    constraint u_CookBookId_RecipeId unique(CookBookId, RecipeId),
-    constraint u_CookBookId_Seq unique(CookBookId, Seq)
+        constraint ck_CookbookRecipe_Seq_must_be_more_then_0 check(Seq > 0),
+    constraint u_CookbookId_RecipeId unique(CookbookId, RecipeId),
+    constraint u_CookbookId_Seq unique(CookbookId, Seq)
 )
