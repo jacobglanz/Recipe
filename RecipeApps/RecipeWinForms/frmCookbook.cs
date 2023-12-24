@@ -1,5 +1,6 @@
 ﻿using RecipeSystem;
 using System.Data;
+using System.Windows.Forms;
 
 namespace RecipeWinForms
 {
@@ -20,6 +21,7 @@ namespace RecipeWinForms
             btnDelete.Click += BtnDelete_Click;
             btnSaveRecipes.Click += BtnSaveRecipes_Click;
             gRecipes.CellContentClick += GRecipes_CellContentClick;
+            gRecipes.DataError += GRecipes_DataError;
             this.Shown += FrmCookbook_Shown;
         }
 
@@ -35,8 +37,10 @@ namespace RecipeWinForms
         private void LoadData()
         {
             dtCookBook = Cookbook.Get(cookBookId);
-
-            dtCookBook.Rows.Add();
+            if (cookBookId == 0)
+            {
+                dtCookBook.Rows.Add();
+            }
             if (dtCookBook.Rows.Count == 0)
             {
                 dtCookBook.Rows.Add();
@@ -129,6 +133,18 @@ namespace RecipeWinForms
 
         private void SaveCookbookRecipes()
         {
+            DataRow[] rows = dtCookbookRecipes.Select("", "Seq ASC");
+            int seq = 1;
+            foreach (DataRow r in rows)
+            {
+                if (r["Seq"] is int && (int)r["Seq"] != seq)
+                {
+                    MessageBox.Show("Seq not correct, make sure to start from 1 and not skip any number", Application.ProductName);
+                    return;
+                }
+                seq++;
+            }
+
             try
             {
                 this.Cursor = Cursors.WaitCursor;
@@ -195,7 +211,13 @@ namespace RecipeWinForms
                 }
             }
         }
-
+        private void GRecipes_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (e.Exception is FormatException && e.ColumnIndex == gRecipes.Columns["Seq"].Index)
+            {
+                MessageBox.Show("Seq should be a number (int)", Application.ProductName);
+            }
+        }
 
     }
 }

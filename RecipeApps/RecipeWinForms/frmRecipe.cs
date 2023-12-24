@@ -24,7 +24,9 @@ namespace RecipeWinForms
             btnSaveIngredients.Click += BtnSaveIngredients_Click;
             btnSaveInstructions.Click += BtnSaveInstructions_Click;
             gIngredients.CellContentClick += GIngredients_CellContentClick;
+            gIngredients.DataError += GIngredients_DataError;
             gInstructions.CellContentClick += GInstructions_CellContentClick;
+            gInstructions.DataError += GInstructions_DataError;
             this.Shown += FrmRecipe_Shown;
         }
 
@@ -129,7 +131,7 @@ namespace RecipeWinForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, Application.ProductName);
             }
             finally
             {
@@ -153,7 +155,7 @@ namespace RecipeWinForms
             {
                 if (r["Seq"] is int && (int)r["Seq"] != seq)
                 {
-                    MessageBox.Show("Seq not correct, make sure to start from 1 and not skip any number");
+                    MessageBox.Show("Seq not correct, make sure to start from 1 and not skip any number", Application.ProductName);
                     return;
                 }
                 seq++;
@@ -172,7 +174,18 @@ namespace RecipeWinForms
             {
                 this.Cursor = Cursors.Default;
             }
+        }
 
+        private void HandleGridFormatError(int columnIndex, DataGridView grid)
+        {
+            if (grid.Columns["Seq"].Index == columnIndex)
+            {
+                MessageBox.Show("Seq should be a number (int)", Application.ProductName);
+            }
+            else if (grid.Columns["Amount"].Index == columnIndex)
+            {
+                MessageBox.Show("Amount should be a number (decimal)", Application.ProductName);
+            }
         }
 
         private void DeleteRecipeChild(DataGridView grid, int rowIndex, string tableName)
@@ -190,7 +203,7 @@ namespace RecipeWinForms
                 {
                     this.Cursor = Cursors.WaitCursor;
                     Recipe.DeleteRecipeChild(tableName, pkId);
-                    gIngredients.Rows.RemoveAt(rowIndex);
+                    grid.Rows.RemoveAt(rowIndex);
                 }
                 catch (Exception ex)
                 {
@@ -242,6 +255,19 @@ namespace RecipeWinForms
         {
             BindData();
         }
-
+        private void GInstructions_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (e.Exception is FormatException && sender is DataGridView g)
+            {
+                HandleGridFormatError(e.ColumnIndex, g);
+            }
+        }
+        private void GIngredients_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (e.Exception is FormatException && sender is DataGridView g)
+            {
+                HandleGridFormatError(e.ColumnIndex, g);
+            }
+        }
     }
 }

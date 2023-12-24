@@ -13,11 +13,10 @@ create or alter procedure dbo.RecipeUpdate(
 as
 begin
     declare @return int = 0, @PreviousRecipeStatus varchar(9) = ''
-    select @RecipeId = isnull(@RecipeId, 0)
+    select @RecipeId = isnull(@RecipeId, 0), @DraftTime = isnull(@DraftTime,getdate())
 
     if (@RecipeId = 0)
     begin
-        select @DraftTime = getdate() --set DraftTime to current time
         insert Recipe(StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, PublishedTime, ArchivedTime)
         values (@StaffId, @CuisineTypeId, @RecipeName, @Calories, @DraftTime, @PublishedTime, @ArchivedTime)
         select @RecipeId = scope_identity() --set Pk to newly created record's Pk
@@ -47,5 +46,6 @@ begin
         where RecipeId = @RecipeId
     end
 
+	finished:
     return @return
 end

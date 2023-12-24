@@ -8,13 +8,17 @@ begin
 
     begin try 
         begin transaction 
-        delete MealCourseRecipe where MealCourseRecipeId in (
-            select MealCourseRecipeId from MealCourseRecipe mcr
-            join MealCourse mc on mc.MealCourseId = mcr.MealCourseId
-            where mc.MealId = @MealId
-        )
+
+		delete mcr
+		from MealCourseRecipe mcr 
+		join MealCourse mc 
+		on mcr.MealCourseId = mc.MealCourseId
+		where mc.MealId = @MealId
+
         delete MealCourse where MealId = @MealId
+
         delete Meal where MealId = @MealId
+
         commit 
     end try 
     begin catch 

@@ -1,11 +1,9 @@
 create or alter procedure dbo.MealGet(
-    @all int = 0,
-    @MealId int = 0,
-    @MealName varchar(30) = ''
+    @All int = 0,
+    @MealId int = 0
 )
 as
 begin
-    select @MealName = nullif(@MealName, '')
     select
         m.MealId,
         [Meal Name] = m.MealName,
@@ -18,8 +16,7 @@ begin
     join Staff s
     on m.StaffId = s.StaffId
     where m.MealId = @MealId
-    or m.MealName like '%' + @MealName + '%'
-    or @all = 1
+    or @All = 1
 end
 go
 
@@ -27,10 +24,6 @@ go
 exec MealGet
 
 exec MealGet @all = 1
-
-exec MealGet @MealName = ''--empty
-
-exec MealGet @MealName = 'a'
 
 declare @MealId int
 select top 1 @MealId = m.MealId from Meal m

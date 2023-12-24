@@ -12,7 +12,7 @@ begin
 
     begin try
     begin transaction
-        delete CookBookRecipe where RecipeId in (select RecipeId from @tRecipes)
+        delete CookbookRecipe where RecipeId in (select RecipeId from @tRecipes)
         delete MealCourseRecipe where RecipeId in (select RecipeId from @tRecipes)
         delete RecipeInstruction where RecipeId in (select RecipeId from @tRecipes)
         delete RecipeIngredient where RecipeId in (select RecipeId from @tRecipes)
@@ -29,7 +29,6 @@ begin
 end
 go
 
-
 /*
-    exec CuisineTypeDelete @CuisineTypeId = 126
+    exec CuisineTypeDelete @CuisineTypeId = null
 */

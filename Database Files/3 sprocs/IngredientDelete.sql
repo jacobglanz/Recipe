@@ -1,6 +1,5 @@
-create or alter proc dbo.IngredientDelete(
+create or alter proc dbo.IngredientDelete
     @IngredientId int
-)
 as
 begin
     declare @Return int = 0

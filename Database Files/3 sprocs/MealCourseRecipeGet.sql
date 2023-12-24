@@ -1,10 +1,12 @@
-create or alter procedure dbo.MealCourseRecipeGet(@all int = 0, @MealCourseRecipeId int = 0)
+create or alter procedure dbo.MealCourseRecipeGet(
+	@All int = 0, 
+	@MealCourseRecipeId int = 0)
 as
 begin
     select mcr.MealCourseRecipeId, mcr.MealCourseId, mcr.RecipeId, mcr.MainDish
     from MealCourseRecipe mcr
     where mcr.MealCourseRecipeId = @MealCourseRecipeId
-    or @all = 1
+    or @All = 1
 end 
 go
 
