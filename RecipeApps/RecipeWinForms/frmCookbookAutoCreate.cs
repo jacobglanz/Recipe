@@ -16,7 +16,7 @@ namespace RecipeWinForms
             try
             {
                 this.Cursor = Cursors.WaitCursor;
-                DataTable dtCookbook = Cookbook.CreateForUser((int)lstUsername.SelectedValue);
+                DataTable dtCookbook = Cookbook.CookbookAutoCreate((int)lstUsername.SelectedValue);
                 if (dtCookbook.Rows.Count == 1 && dtCookbook.Columns.Contains("CookbookId"))
                 {
                     ((frmMain)MdiParent).OpenForm(typeof(frmCookbook), (int)dtCookbook.Rows[0]["CookbookId"]);

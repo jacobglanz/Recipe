@@ -13,7 +13,6 @@ namespace RecipeSystem
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
             SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
             SQLUtility.SetParamValue(cmd, "@All", allBit);
-            SQLUtility.SetParamValue(cmd, "@RecipeName", searchInput);
             return SQLUtility.GetDataTable(cmd);
         }
         
@@ -68,7 +67,10 @@ namespace RecipeSystem
         {
             foreach (DataRow r in dt.Rows)
             {
-                r["RecipeId"] = recipeId;
+                if (r.RowState != DataRowState.Deleted)
+                {
+                    r["RecipeId"] = recipeId;
+                }
             }
             SQLUtility.SaveDataTable(dt, tableName + "Update");
         }

@@ -1,6 +1,34 @@
-﻿using NuGet.Frameworks;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
+
+
+
+//[Test]
+//public static void DeletePublishedRecipe()
+//{
+//    string sql = "select top 1 r.RecipeId from Recipe r where r.RecipeStatus = 'Published'";
+//    DataTable dt = SQLUtility.GetDataTable(sql);
+//    Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+//    int recipeId = (int)dt.Rows[0]["RecipeId"];
+//    TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+//    TestContext.WriteLine($"Deleting Recipe {recipeId}");
+
+//    Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+//    TestContext.WriteLine(ex.Message);
+//}
+
+//[Test]
+//public static void DeleteRecipeThatIsArchivedLessOrEqualTo30Days()
+//{
+//    string sql = "select top 1 r.RecipeId from Recipe r where datediff(day, r.ArchivedTime, getdate()) <= 30";
+//    DataTable dt = SQLUtility.GetDataTable(sql);
+//    Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+//    int recipeId = (int)dt.Rows[0]["RecipeId"];
+//    TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+//    TestContext.WriteLine($"Deleting Recipe {recipeId}");
+
+//    Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
+//    TestContext.WriteLine(ex.Message);
+//}
 
 namespace RecipeTesting
 {
@@ -95,7 +123,7 @@ namespace RecipeTesting
             int staffRecipeCount = Utils.GetFirstRowColumnIfInt($"select count(*) from Recipe where StaffId = {staffId}");
             Assume.That(staffRecipeCount > 0, $"Staff didn't create any recipes");
 
-            DataTable dtNewCookbook = Cookbook.CreateForUser(staffId);
+            DataTable dtNewCookbook = Cookbook.CookbookAutoCreate(staffId);
             int newCookbookId = Utils.GetFirstRowColumnIfInt(dtNewCookbook);
             int staffCookbookRecipeCount = Utils.GetFirstRowColumnIfInt($"select count(*) from CookBookRecipe where CookbookId = {newCookbookId}");
 

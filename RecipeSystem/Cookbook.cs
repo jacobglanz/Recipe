@@ -40,9 +40,9 @@ namespace RecipeSystem
             SQLUtility.SaveDateRow(dtCookbook.Rows[0], "CookBookUpdate");
         }
 
-        public static DataTable CreateForUser(int staffId)
+        public static DataTable CookbookAutoCreate(int staffId)
         {
-            SqlCommand cmd = SQLUtility.GetSQLCommand("CookbookCreateOfStaffRecipes");  
+            SqlCommand cmd = SQLUtility.GetSQLCommand("CookbookAutoCreate");
             SQLUtility.SetParamValue(cmd, "@StaffId", staffId);
             return SQLUtility.GetDataTable(cmd);
         }
@@ -61,9 +61,12 @@ namespace RecipeSystem
                 throw new Exception("Cannot save Cookbook Recipes, 'dtCookbookRecipes.Rows.Count == 0'");
             }
 
-            foreach(DataRow r  in dtCookbookRecipes.Rows)
+            foreach (DataRow r in dtCookbookRecipes.Rows)
             {
-                r["CookbookId"] = cookbookId;
+                if (r.RowState != DataRowState.Deleted)
+                {
+                    r["CookbookId"] = cookbookId;
+                }
             }
 
             SQLUtility.SaveDataTable(dtCookbookRecipes, "CookBookRecipeUpdate");
