@@ -1,6 +1,4 @@
-﻿using RecipeSystem;
-using System.Data;
-using System.Windows.Forms;
+﻿using System.Data;
 
 namespace RecipeWinForms
 {

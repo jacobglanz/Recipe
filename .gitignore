@@ -13,6 +13,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#Secret files
+*secret.config
+*create-login.sql
+
 # Mono auto generated files
 mono_crash.*
 

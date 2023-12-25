@@ -37,8 +37,8 @@ namespace RecipeTesting
         [SetUp]
         public void Setup()
         {
-            DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
-            SQLUtility.ExecuteSQL(SQLUtility.GetSQLCommand("DataUpdate"));
+            //DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
+            //SQLUtility.ExecuteSQL(SQLUtility.GetSQLCommand("DataUpdate"));
         }
 
         [Test]

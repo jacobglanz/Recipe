@@ -16,7 +16,19 @@
             mnuEditDataMaintenance.Click += MnuEditDataMaintenance_Click;
             mnuCloneRecipe.Click += MnuCloneRecipe_Click;
             mnuCookbookAutoCreate.Click += MnuCookbookAutoCreate_Click;
-            this.Shown += MnuDashboard;
+            this.Shown += FrmMain_Shown;
+        }
+
+        private void FrmMain_Shown(object? sender, EventArgs e)
+        {
+            frmLogin f = new() { StartPosition = FormStartPosition.CenterParent };
+            if (!f.ShowLogin())
+            {
+                this.Close();
+                Application.Exit();
+            }
+
+            OpenForm(typeof(frmDashboard));
         }
 
         public void OpenForm(Type frmType, int pkId = 0)
