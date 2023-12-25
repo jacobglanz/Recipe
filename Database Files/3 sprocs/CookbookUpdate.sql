@@ -2,7 +2,7 @@ create or alter procedure dbo.CookbookUpdate(
 	@CookbookId int output,
 	@StaffId int,
 	@CookbookName varchar(50) output,
-	@Price decimal output,
+	@Price decimal(5,2) output,
 	@Active bit = 0,
 	@Message varchar(500) = '' output
 )

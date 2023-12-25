@@ -7,34 +7,21 @@ begin
     declare @Return int = 0
     select @CookbookId = isnull(@CookbookId,0), @All = isnull(@All,0)
 
-    if (@All = 1)
-    begin
-        select
-            cb.CookbookId,
-            cb.CookbookName,
-            Author = s.FirstName + ' ' + s.LastName,
-            NumRecipes = dbo.CookbookRecipeCount(CookbookId),
-            cb.Price
-        from Cookbook cb
-        join Staff s
-        on cb.StaffId = s.StaffId
-        order by cb.CookbookName
-    end
-    else
-    begin
-        select
-            cb.CookbookId,
-            cb.StaffId,
-            cb.CookbookName,
-            cb.Price,
-            cb.Active,
-            cb.CreatedDate
-        from Cookbook cb
-            join Staff s
-            on cb.StaffId = s.StaffId
-        where cb.CookbookId = @CookbookId
-        order by cb.Active desc, cb.CreatedDate desc
-    end
+    select
+        cb.CookbookId,
+        cb.CookbookName,
+        cb.StaffId,
+        Author = s.FirstName + ' ' + s.LastName,
+        NumRecipes = dbo.CookbookRecipeCount(CookbookId),
+        cb.Price,
+        cb.Active,
+        cb.CreatedDate
+    from Cookbook cb
+    join Staff s
+    on cb.StaffId = s.StaffId
+    where @All = 1
+    or cb.CookbookId = @CookbookId
+    order by cb.CookbookName, cb.Active desc, cb.CreatedDate desc
 
     return @Return
 end

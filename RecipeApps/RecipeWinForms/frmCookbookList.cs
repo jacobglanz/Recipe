@@ -19,6 +19,16 @@ namespace RecipeWinForms
         {
             dtCookBooks = Cookbook.GetAll();
             gCookbooks.DataSource = dtCookBooks;
+
+            if (gCookbooks.Columns.Contains("Active"))
+            {
+                gCookbooks.Columns["Active"].Visible = false;
+            }
+            if (gCookbooks.Columns.Contains("CreatedDate"))
+            {
+                gCookbooks.Columns["CreatedDate"].Visible = false;
+            }
+
             WindowsFormsUtility.FormatGridForSearchResults(gCookbooks);
         }
 
