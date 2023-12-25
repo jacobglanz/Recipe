@@ -1,7 +1,8 @@
 script to create login is excluded from this repo.
-create a file called create-login.sql (this file is ignored by .gitignor in tis repo)
+create a file called create-login.sql (this file is ignored by .gitignore in this repo)
 
-add the following script
+add the following script:
+
 --IMPORTANT create login in MASTER
 create login [loginname] with password  = '[password]'
 
