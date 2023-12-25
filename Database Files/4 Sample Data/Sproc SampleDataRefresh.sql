@@ -104,7 +104,7 @@ insert MealCourse(MealId, CourseId)
    union select 'MosheW546', 'American', 'Family Pizza Pie', 2505, dateadd(day, -50, getdate()), null, null
    union select 'MosheW546', 'American', 'Tomato Basil Pasta', 2505, dateadd(day, -50, getdate()), null, null
    union select 'MosheW546', 'American', 'Pancakes', 2505, dateadd(day, -50, getdate()), null, null
-   union select 'MosheW546', 'American', 'Grilled Cheese', 2505, dateadd(day, -50, getdate()), null, null
+   union select 'MosheW546', 'American', 'Grilled Cheese', 2505, dateadd(day, -50, getdate()), dateadd(day, -25, getdate()), null
 )
 insert Recipe(StaffId, CuisineTypeId, RecipeName, Calories, DraftTime, PublishedTime, ArchivedTime)
    select s.StaffId, ct.CuisineTypeId, x.RecipeName, x.Calories, x.DraftTime, x.PublishedTime, x.ArchivedTime

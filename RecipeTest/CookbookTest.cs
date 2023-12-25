@@ -1,35 +1,5 @@
 ﻿using System.Data;
 
-
-
-//[Test]
-//public static void DeletePublishedRecipe()
-//{
-//    string sql = "select top 1 r.RecipeId from Recipe r where r.RecipeStatus = 'Published'";
-//    DataTable dt = SQLUtility.GetDataTable(sql);
-//    Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
-//    int recipeId = (int)dt.Rows[0]["RecipeId"];
-//    TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
-//    TestContext.WriteLine($"Deleting Recipe {recipeId}");
-
-//    Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
-//    TestContext.WriteLine(ex.Message);
-//}
-
-//[Test]
-//public static void DeleteRecipeThatIsArchivedLessOrEqualTo30Days()
-//{
-//    string sql = "select top 1 r.RecipeId from Recipe r where datediff(day, r.ArchivedTime, getdate()) <= 30";
-//    DataTable dt = SQLUtility.GetDataTable(sql);
-//    Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
-//    int recipeId = (int)dt.Rows[0]["RecipeId"];
-//    TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
-//    TestContext.WriteLine($"Deleting Recipe {recipeId}");
-
-//    Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(dt));
-//    TestContext.WriteLine(ex.Message);
-//}
-
 namespace RecipeTesting
 {
     public class CookbookTest
@@ -37,8 +7,7 @@ namespace RecipeTesting
         [SetUp]
         public void Setup()
         {
-            //DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
-            //SQLUtility.ExecuteSQL(SQLUtility.GetSQLCommand("DataUpdate"));
+            Utils.RefreshTestData();
         }
 
         [Test]
@@ -84,7 +53,7 @@ namespace RecipeTesting
             DBCookbookId = Utils.GetFirstRowColumnIfInt($"select CookbookId from Cookbook where CookbookId = {DBCookbookId}");
             Assert.IsTrue(DBCookbookId == 0, $"Cookbbok ({DBCookbookId}) should not exists in DB");
             TestContext.WriteLine($"Cookbbok ({DBCookbookId}) does not exists in DB");
-        } 
+        }
 
         [Test]
         [TestCase("Cookbook test 1", 24.99, true, "2023-04-05")]
@@ -115,8 +84,8 @@ namespace RecipeTesting
         public static void CreateCookbookForAllRecipesFromAUser()
         {
             int staffId = Utils.GetFirstRowColumnIfInt("select top 1 StaffId from Recipe");
-            SQLUtility.ExecuteSQL($"delete CookBookRecipe where CookbookId in (select CookbookId from CookBook where StaffId = {staffId})");
-            SQLUtility.ExecuteSQL($"delete CookBook where StaffId = {staffId}");
+            Utils.ExecuteSQL($"delete CookBookRecipe where CookbookId in (select CookbookId from CookBook where StaffId = {staffId})");
+            Utils.ExecuteSQL($"delete CookBook where StaffId = {staffId}");
             TestContext.WriteLine($"Deleting all cookbook's (and their recipe's) created by Staff({staffId})");
             int staffCookbookCount = Utils.GetFirstRowColumnIfInt($"select count(*) from Cookbook where StaffId = {staffId}");
             Assume.That(staffCookbookCount == 0, $"Cookbook(s) not deleted, count = {staffCookbookCount}");
@@ -157,13 +126,13 @@ namespace RecipeTesting
         [Test]
         public static void InsertCookbookRecipes()
         {
-            DataTable dtCookbookRecipes = SQLUtility.GetDataTable($"select CookBookId, CookBookRecipeId, RecipeId, Seq from CookBookRecipe where CookBookId = (select top 1 CookbookId from CookbookRecipe group by CookbookId order by count(*) desc)");
+            DataTable dtCookbookRecipes = Utils.GetDataTable($"select CookBookId, CookBookRecipeId, RecipeId, Seq from CookBookRecipe where CookBookId = (select top 1 CookbookId from CookbookRecipe group by CookbookId order by count(*) desc)");
             int cookbookId = Utils.GetFirstRowColumnIfInt(dtCookbookRecipes);
             Assume.That(cookbookId > 0, "DB didn't return Cookbook, can't run test");
             int InitialCountCbRecipes = Utils.GetFirstRowColumnIfInt($"select count(*) from CookBookRecipe where CookBookId = {cookbookId}");
             TestContext.WriteLine($"Cookbook ({cookbookId}) chosen for test, currently has {InitialCountCbRecipes} recipe(s)");
             TestContext.WriteLine("Deleting all recipes to re-insert them");
-            SQLUtility.ExecuteSQL($"delete CookbookRecipe where CookbookId = {cookbookId}");
+            Utils.ExecuteSQL($"delete CookbookRecipe where CookbookId = {cookbookId}");
             int tempCountCbRecipes = Utils.GetFirstRowColumnIfInt($"select count(*) from CookBookRecipe where CookBookId = {cookbookId}");
             Assume.That(tempCountCbRecipes == 0, "CookbookRecipes not deleted, cant run test");
             TestContext.WriteLine($"Cookbook ({cookbookId}) currently has {tempCountCbRecipes} recipe(s)");
@@ -183,7 +152,7 @@ namespace RecipeTesting
         [Test]
         public static void UpdateCookbookRecipes()
         {
-            DataTable dtCookbookRecipes = SQLUtility.GetDataTable($"select CookBookId, CookBookRecipeId, RecipeId, Seq from CookBookRecipe where CookBookId = (select top 1 CookbookId from CookbookRecipe group by CookbookId order by count(*) desc) order by Seq desc");
+            DataTable dtCookbookRecipes = Utils.GetDataTable($"select CookBookId, CookBookRecipeId, RecipeId, Seq from CookBookRecipe where CookBookId = (select top 1 CookbookId from CookbookRecipe group by CookbookId order by count(*) desc) order by Seq desc");
             int cookbookId = Utils.GetFirstRowColumnIfInt(dtCookbookRecipes);
             Assume.That(cookbookId > 0, "DB didn't return Cookbook, can't run test");
             int countCbRecipes = dtCookbookRecipes.Rows.Count;
@@ -195,7 +164,7 @@ namespace RecipeTesting
             }
             Cookbook.SaveCookbookRecipes(dtCookbookRecipes, cookbookId);
 
-            DataTable newDtCookbookRecipes = SQLUtility.GetDataTable($"select top 2 Seq from CookBookRecipe where Cookbookid = {cookbookId} order by Seq desc");
+            DataTable newDtCookbookRecipes = Utils.GetDataTable($"select top 2 Seq from CookBookRecipe where Cookbookid = {cookbookId} order by Seq desc");
             int SeqLast = (int)newDtCookbookRecipes.Rows[0]["Seq"];
             int SeqOneBeforeLast = (int)newDtCookbookRecipes.Rows[1]["Seq"];
 

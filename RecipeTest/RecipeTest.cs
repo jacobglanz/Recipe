@@ -1,16 +1,16 @@
 using NUnit.Framework.Internal;
-using RecipeTesting;
+using System.Configuration;
 using System.Data;
 
-namespace RecipeTest
+namespace RecipeTesting
 {
-    public class RecipeTesting
+    public class RecipeTest
     {
+
         [SetUp]
         public void Setup()
         {
-            //DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
-            //SQLUtility.ExecuteSQL("DataUpdate"); //refresh test data
+            Utils.RefreshTestData();
         }
 
         [Test]
@@ -60,6 +60,34 @@ namespace RecipeTest
 
             Assert.IsTrue(recipeId == 0, $"Recipe ({recipeId}) exists in DB");
             TestContext.WriteLine($"Recipe ({recipeId}) does not exists in DB");
+        }
+
+        [Test]
+        public static void DeletePublishedRecipe()
+        {
+            string sql = "select top 1 r.RecipeId from Recipe r where r.RecipeStatus = 'Published'";
+            DataTable dt = Utils.GetDataTable(sql);
+            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+            int recipeId = (int)dt.Rows[0]["RecipeId"];
+            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+            TestContext.WriteLine($"Deleting Recipe ({recipeId}) should not work because RecipeStatus = Published");
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(recipeId));
+            TestContext.WriteLine(ex.Message);
+        }
+
+        [Test]
+        public static void DeleteRecipeThatIsArchivedLessOrEqualTo30Days()
+        {
+            string sql = "select top 1 r.RecipeId from Recipe r where datediff(day, r.ArchivedTime, getdate()) <= 30";
+            DataTable dt = Utils.GetDataTable(sql);
+            Assume.That(dt.Rows.Count > 0, "No records returned from DB, can't do test");
+            int recipeId = (int)dt.Rows[0]["RecipeId"];
+            TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
+            TestContext.WriteLine($"Deleting Recipe ({recipeId}) should not work because ArchivedTime <= 30 Days from today");
+
+            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(recipeId));
+            TestContext.WriteLine(ex.Message);
         }
 
         [Test]
@@ -143,13 +171,13 @@ namespace RecipeTest
         [Test]
         public void InsertRecipeIngredient()
         {
-            DataTable dtRecipeIngredients = SQLUtility.GetDataTable("select RecipeId, RecipeIngredientId, IngredientId, UnitOfMeasureId, Amount, Seq from RecipeIngredient where RecipeId = (select top 1 RecipeId from RecipeIngredient group by RecipeId order by count(*) desc)");
+            DataTable dtRecipeIngredients = Utils.GetDataTable("select RecipeId, RecipeIngredientId, IngredientId, UnitOfMeasureId, Amount, Seq from RecipeIngredient where RecipeId = (select top 1 RecipeId from RecipeIngredient group by RecipeId order by count(*) desc)");
             int recipeId = Utils.GetFirstRowColumnIfInt(dtRecipeIngredients);
             Assume.That(recipeId > 0, "DB didn't return Recipethat has Ingredients, can't run test");
             int initialCountRecipeIngredients = dtRecipeIngredients.Rows.Count;
             TestContext.WriteLine($"Recipe ({recipeId}) chosen for test, currently has {initialCountRecipeIngredients} Ingredient(s)");
             TestContext.WriteLine("Deleting all Ingredients to re-insert them");
-            SQLUtility.ExecuteSQL($"delete RecipeIngredient where RecipeId = {recipeId}");
+            Utils.ExecuteSQL($"delete RecipeIngredient where RecipeId = {recipeId}");
             int tempCountRecipeIngredients = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeIngredient where RecipeId = {recipeId}");
             Assume.That(tempCountRecipeIngredients == 0, "RecipeIngredients not deleted, cant run test");
             TestContext.WriteLine($"Recipe ({recipeId}) currently has {tempCountRecipeIngredients} Ingredient(s)");
@@ -169,13 +197,13 @@ namespace RecipeTest
         [Test]
         public void InsertRecipeInstruction()
         {
-            DataTable dtRecipeInstructions = SQLUtility.GetDataTable("select RecipeId, RecipeInstructionId, Seq, InstructionDesc from RecipeInstruction where RecipeId = (select top 1 RecipeId from RecipeInstruction group by RecipeId order by count(*) desc)");
+            DataTable dtRecipeInstructions = Utils.GetDataTable("select RecipeId, RecipeInstructionId, Seq, InstructionDesc from RecipeInstruction where RecipeId = (select top 1 RecipeId from RecipeInstruction group by RecipeId order by count(*) desc)");
             int recipeId = Utils.GetFirstRowColumnIfInt(dtRecipeInstructions);
             Assume.That(recipeId > 0, "DB didn't return Recipethat has Instructions, can't run test");
             int initialCountRecipeInstructions = dtRecipeInstructions.Rows.Count;
             TestContext.WriteLine($"Recipe ({recipeId}) chosen for test, currently has {initialCountRecipeInstructions} Instruction(s)");
             TestContext.WriteLine("Deleting all Instructions to re-insert them");
-            SQLUtility.ExecuteSQL($"delete RecipeInstruction where RecipeId = {recipeId}");
+            Utils.ExecuteSQL($"delete RecipeInstruction where RecipeId = {recipeId}");
             int tempCountRecipeInstructions = Utils.GetFirstRowColumnIfInt($"select count(*) from RecipeInstruction where RecipeId = {recipeId}");
             Assume.That(tempCountRecipeInstructions == 0, "RecipeInstructions not deleted, cant run test");
             TestContext.WriteLine($"Recipe ({recipeId}) currently has {tempCountRecipeInstructions} Instruction(s)");
@@ -198,7 +226,7 @@ namespace RecipeTest
         {
             int recipeId = Utils.GetFirstRowColumnIfInt("select top 1 RecipeId from RecipeIngredient");
             Assume.That(recipeId > 0, "DB didn't return Recipe that has Ingredients, can't run test");
-            DataTable dtRecipeIngredient = SQLUtility.GetDataTable($"select * from RecipeIngredient where RecipeId = {recipeId}");
+            DataTable dtRecipeIngredient = Utils.GetDataTable($"select * from RecipeIngredient where RecipeId = {recipeId}");
             int recipeIngredientCount = dtRecipeIngredient.Rows.Count;
             TestContext.WriteLine($"Recipe {recipeId} has {recipeIngredientCount} Ingredient(s)");
             TestContext.WriteLine("Deleting ingredients...");

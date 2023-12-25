@@ -1,21 +1,11 @@
-﻿using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-namespace RecipeTesting
+﻿namespace RecipeTesting
 {
     public class MealTest
     {
         [SetUp]
         public void Set()
         {
-            //DBManager.SetConnectionString("Server=.\\SQLExpress;Database=HeartyHearthDB;Trusted_Connection=true;TrustServerCertificate=true");
+            Utils.RefreshTestData();
         }
 
         [Test]
