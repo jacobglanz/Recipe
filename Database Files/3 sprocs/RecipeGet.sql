@@ -1,14 +1,15 @@
 create or alter procedure dbo.RecipeGet(
     @RecipeId int = 0,
     @CookbookId int = 0,
+    @RecipeName varchar(75) = '',
     @All int = 0,
     @Message varchar(500) = ''
 )
 as
 begin
-    select @All = isnull(@All,0)
+    select @All = isnull(@All,0), @RecipeName = isnull(@RecipeName,'')
 
-    if (@All = 0)
+    if (@RecipeId > 0)
     begin
         select r.RecipeId, RecipeDesc = dbo.RecipeDesc(r.RecipeId), r.StaffId, r.CuisineTypeId,
             r.RecipeName, r.Calories, r.DraftTime, r.PublishedTime, r.ArchivedTime, r.RecipeStatus
@@ -27,6 +28,8 @@ begin
         on s.StaffId = r.StaffId
         left join RecipeIngredient rg
         on r.RecipeId = rg.RecipeId
+        where @All = 1
+        or @RecipeName like '%'+ @RecipeName + '%'
         group by r.RecipeId, r.RecipeName, r.Calories, r.RecipeStatus, s.FirstName, s.LastName
         order by r.RecipeStatus desc, r.RecipeName
     end

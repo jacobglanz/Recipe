@@ -12,6 +12,7 @@ namespace RecipeSystem
             int allBit = all ? 1 : 0;
             SqlCommand cmd = SQLUtility.GetSQLCommand("RecipeGet");
             SQLUtility.SetParamValue(cmd, "@RecipeId", recipeId);
+            SQLUtility.SetParamValue(cmd, "@RecipeName", searchInput);
             SQLUtility.SetParamValue(cmd, "@All", allBit);
             return SQLUtility.GetDataTable(cmd);
         }
