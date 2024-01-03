@@ -29,7 +29,7 @@ begin
         left join RecipeIngredient rg
         on r.RecipeId = rg.RecipeId
         where @All = 1
-        or @RecipeName like '%'+ @RecipeName + '%'
+        or r.RecipeName like '%'+ @RecipeName + '%'
         group by r.RecipeId, r.RecipeName, r.Calories, r.RecipeStatus, s.FirstName, s.LastName
         order by r.RecipeStatus desc, r.RecipeName
     end

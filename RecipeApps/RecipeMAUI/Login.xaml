@@ -29,6 +29,5 @@
                      Grid.Row="3" Grid.Column="1" Clicked="CancelBtn_Clicked"/>
             </Grid>
         </Border>
-
     </VerticalStackLayout>
 </ContentPage>
