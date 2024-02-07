@@ -4,8 +4,12 @@ using System.Net.NetworkInformation;
 
 namespace RecipeSystem
 {
-    public class Recipe
+    public class Recipe : bizObject
     {
+        public Recipe() : base("Recipe")
+        {
+
+        }
 
         public static DataTable Get(int recipeId, bool all = false, string searchInput = "")
         {
@@ -16,7 +20,7 @@ namespace RecipeSystem
             SQLUtility.SetParamValue(cmd, "@All", allBit);
             return SQLUtility.GetDataTable(cmd);
         }
-        
+
         public static DataTable GetAll()
         {
             return Get(0, true);

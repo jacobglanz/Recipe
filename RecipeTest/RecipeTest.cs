@@ -21,7 +21,8 @@ namespace RecipeTesting
             TestContext.WriteLine($"DB returned recipe {dbRecipeId}");
             TestContext.WriteLine($"App should return Recipe {dbRecipeId}");
 
-            int appRecipeId = Utils.GetFirstRowColumnIfInt(Recipe.Get(dbRecipeId));
+            bizRecipe recipe = new();
+            int appRecipeId = Utils.GetFirstRowColumnIfInt(recipe.Load(dbRecipeId));
 
             Assert.IsTrue(appRecipeId == dbRecipeId, $"App returned Recipe {appRecipeId}");
             TestContext.WriteLine($"App returned Recipe {appRecipeId}");
@@ -50,12 +51,15 @@ namespace RecipeTesting
                 "join RecipeInstruction rs on r.RecipeId = rs.RecipeId " +
                 "join CookBookRecipe cbr on r.RecipeId = cbr.RecipeId " +
                 "join MealCourseRecipe mcr on r.RecipeId = mcr.RecipeId";
-            int recipeId = Utils.GetFirstRowColumnIfInt(sql);
+            DataTable dtRecipeDB = Utils.GetDataTable(sql);
+            int recipeId = Utils.GetFirstRowColumnIfInt(dtRecipeDB);
             Assume.That(recipeId > 0, "DB didn't return a recipe that is related to RecipeIngredient, RecipeInstruction, CookBookRecipe and MealCourseRecipe");
             TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
             TestContext.WriteLine($" Deleting Recipe ({recipeId})... should not exists in DB anymore");
 
-            Recipe.Delete(recipeId);
+            bizRecipe recipe = new();
+            recipe.Delete(dtRecipeDB);
+
             recipeId = Utils.GetFirstRowColumnIfInt($"select RecipeId from Recipe where RecipeId = {recipeId}");
 
             Assert.IsTrue(recipeId == 0, $"Recipe ({recipeId}) exists in DB");
@@ -72,7 +76,8 @@ namespace RecipeTesting
             TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
             TestContext.WriteLine($"Deleting Recipe ({recipeId}) should not work because RecipeStatus = Published");
 
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(recipeId));
+            bizRecipe recipe = new();
+            Exception ex = Assert.Throws<Exception>(() => recipe.Delete(dt));
             TestContext.WriteLine(ex.Message);
         }
 
@@ -86,7 +91,8 @@ namespace RecipeTesting
             TestContext.WriteLine($"Recipe ({recipeId}) exists in DB");
             TestContext.WriteLine($"Deleting Recipe ({recipeId}) should not work because ArchivedTime <= 30 Days from today");
 
-            Exception ex = Assert.Throws<Exception>(() => Recipe.Delete(recipeId));
+            bizRecipe recipe = new();
+            Exception ex = Assert.Throws<Exception>(() => recipe.Delete(dt));
             TestContext.WriteLine(ex.Message);
         }
 
@@ -96,7 +102,7 @@ namespace RecipeTesting
         [TestCase("Recipe test 3", 150, "Archived")]
         public static void SaveRecipe(string recipeName, int calories, string recipeStatus)
         {
-            DataTable dt = Recipe.Get(0);
+            DataTable dt = Utils.GetDataTable("select * from Recipe where RecipeId = 0");
             dt.Rows.Add();
             DataRow r = dt.Rows[0];
             int StaffId = Utils.GetFirstRowColumnIfInt("select top 1 StaffId from Staff");
@@ -110,7 +116,8 @@ namespace RecipeTesting
             r["RecipeName"] = recipeName + DateTime.Now;
             r["Calories"] = calories;
             r["RecipeStatus"] = recipeStatus;
-            Recipe.Save(dt);
+            bizRecipe recipe = new();
+            recipe.Save(dt);
 
             int newRecipeId = (int)dt.Rows[0][0];
             Assert.IsTrue(newRecipeId > 0, $"Recipe not created");
