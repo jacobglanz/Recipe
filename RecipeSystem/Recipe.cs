@@ -6,11 +6,6 @@ namespace RecipeSystem
 {
     public class Recipe : bizObject
     {
-        public Recipe() : base("Recipe")
-        {
-
-        }
-
         public static DataTable Get(int recipeId, bool all = false, string searchInput = "")
         {
             int allBit = all ? 1 : 0;
