@@ -22,6 +22,7 @@ namespace RecipeTesting
             TestContext.WriteLine($"App should return Recipe {dbRecipeId}");
 
             bizRecipe recipe = new();
+            recipe.Load(dbRecipeId);
             int appRecipeId = Utils.GetFirstRowColumnIfInt(recipe.Load(dbRecipeId));
 
             Assert.IsTrue(appRecipeId == dbRecipeId, $"App returned Recipe {appRecipeId}");
@@ -58,7 +59,8 @@ namespace RecipeTesting
             TestContext.WriteLine($" Deleting Recipe ({recipeId})... should not exists in DB anymore");
 
             bizRecipe recipe = new();
-            recipe.Delete(dtRecipeDB);
+            recipe.Load(recipeId);
+            recipe.Delete();
 
             recipeId = Utils.GetFirstRowColumnIfInt($"select RecipeId from Recipe where RecipeId = {recipeId}");
 
@@ -97,29 +99,31 @@ namespace RecipeTesting
         }
 
         [Test]
-        [TestCase("Recipe test 1", 25, "Draft")]
-        [TestCase("Recipe test 2", 45, "Published")]
-        [TestCase("Recipe test 3", 150, "Archived")]
-        public static void SaveRecipe(string recipeName, int calories, string recipeStatus)
+        [TestCase("Recipe test 1", 25, "01/01/2015", null, null)]
+        [TestCase("Recipe test 2", 45, "06/17/2019", "06/17/2022", null)]
+        [TestCase("Recipe test 3", 150, "12/16/2012", null, "02/19/2019")]
+        public static void SaveRecipe(string recipeName, int calories, DateTime draftTime, DateTime? publishedTime, DateTime? archivedTime)
         {
-            DataTable dt = Utils.GetDataTable("select * from Recipe where RecipeId = 0");
-            dt.Rows.Add();
-            DataRow r = dt.Rows[0];
-            int StaffId = Utils.GetFirstRowColumnIfInt("select top 1 StaffId from Staff");
-            Assume.That(StaffId > 0, "No staff found in DB and it's needed in order to create a Recipe");
+
+            int staffId = Utils.GetFirstRowColumnIfInt("select top 1 StaffId from Staff");
+            Assume.That(staffId > 0, "No staff found in DB and it's needed in order to create a Recipe");
             int cuisineTypeId = Utils.GetFirstRowColumnIfInt("select top 1 CuisineTypeId from CuisineType");
             Assume.That(cuisineTypeId > 0, "No CuisineType found in DB and it's needed in order to create a Recipe");
             TestContext.WriteLine("Creating new Recipe...");
 
-            r["StaffId"] = StaffId;
-            r["CuisineTypeId"] = cuisineTypeId;
-            r["RecipeName"] = recipeName + DateTime.Now;
-            r["Calories"] = calories;
-            r["RecipeStatus"] = recipeStatus;
-            bizRecipe recipe = new();
-            recipe.Save(dt);
+            bizRecipe recipe = new()
+            {
+                StaffId = staffId,
+                CuisineTypeId = cuisineTypeId,
+                RecipeName = recipeName + DateTime.Now,
+                Calories = calories,
+                DraftTime = draftTime,
+                PublishedTime = publishedTime,
+                ArchivedTime = archivedTime
+            };
+            recipe.Save();
 
-            int newRecipeId = (int)dt.Rows[0][0];
+            int newRecipeId = recipe.RecipeId;
             Assert.IsTrue(newRecipeId > 0, $"Recipe not created");
             TestContext.WriteLine($"New recipe ({newRecipeId}) successfully created");
         }
