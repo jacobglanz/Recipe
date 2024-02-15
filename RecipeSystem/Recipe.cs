@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace RecipeSystem
 {
-    public class Recipe : bizObject
+    public class Recipe : bizObject<Recipe>
     {
         public static DataTable Get(int recipeId, bool all = false, string searchInput = "")
         {

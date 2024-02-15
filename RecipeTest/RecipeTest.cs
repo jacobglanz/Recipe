@@ -1,5 +1,4 @@
 using NUnit.Framework.Internal;
-using System.Configuration;
 using System.Data;
 
 namespace RecipeTesting
@@ -11,6 +10,51 @@ namespace RecipeTesting
         public void Setup()
         {
             Utils.RefreshTestData();
+        }
+
+        [Test]
+        public void GetIngredients()
+        {
+            int dbResultCount = Utils.GetFirstRowColumnIfInt("select count(*) from Ingredient");
+            TestContext.WriteLine($"DB returned {dbResultCount} records, app should return the same");
+
+            bizIngredient g = new();
+            int appResultCount = g.GetList().Count;
+
+            Assert.IsTrue(dbResultCount == appResultCount, $"App returned {appResultCount} records");
+            TestContext.WriteLine($"App returned {appResultCount} records");
+        }
+
+        [Test]
+        public void SearchIngredients()
+        {
+            string searchVal = "bak";
+            string sql = $"select Count = count(*) from Ingredient where IngredientName like '%{searchVal}%'";
+            int dbResultCount = Utils.GetFirstRowColumnIfInt(sql);
+            TestContext.WriteLine($"DB returned {dbResultCount} results for the search value '{searchVal}'");
+            TestContext.WriteLine($"App should also return {dbResultCount} results for this search");
+
+            bizIngredient g = new();
+            int appResultCount = g.Search(searchVal).Count;
+
+            Assert.IsTrue(dbResultCount == appResultCount, $"App returned {appResultCount} results");
+            TestContext.WriteLine($"App returned {appResultCount} results");
+        }
+
+        [Test]
+        public void SearcRecipe()
+        {
+            string searchVal = "ie";
+            string sql = $"select Count = count(*) from Recipe where RecipeName like '%{searchVal}%'";
+            int dbResultCount = Utils.GetFirstRowColumnIfInt(sql);
+            TestContext.WriteLine($"DB returned {dbResultCount} results for the search value '{searchVal}'");
+            TestContext.WriteLine($"App should also return {dbResultCount} results for this search");
+
+            bizRecipe recipe = new();
+            int appResultCount = recipe.Search(searchVal).Count;
+
+            Assert.IsTrue(dbResultCount == appResultCount, $"App returned {appResultCount} results");
+            TestContext.WriteLine($"App returned {appResultCount} results");
         }
 
         [Test]
@@ -37,7 +81,8 @@ namespace RecipeTesting
             TestContext.WriteLine($"DB Recipe Count = {dbRecipeCount}");
             TestContext.WriteLine($"App Recipe Count shold also be = {dbRecipeCount}");
 
-            int appRecipeCount = Recipe.GetAll().Rows.Count;
+            bizRecipe recipe = new();
+            int appRecipeCount = recipe.GetList().Count;
 
             Assert.IsTrue(dbRecipeCount == appRecipeCount, $"App Recipe Count should be = {dbRecipeCount} but is = {appRecipeCount}");
             TestContext.WriteLine($"App Recipe Count = {appRecipeCount}");

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RecipeSystem
 {
-    public class bizRecipe : bizObject
+    public class bizRecipe : bizObject<bizRecipe>
     {
         int _recipeId;
         int _staffId;
@@ -17,6 +19,14 @@ namespace RecipeSystem
         DateTime? _publishedTime;
         DateTime? _archivedTime;
         string _recipeStatus = "";
+
+        public List<bizRecipe> Search(string searchValue)
+        {
+            SqlCommand cmd = SQLUtility.GetSQLCommand(this.GetSprocName);
+            SQLUtility.SetParamValue(cmd, "RecipeName", searchValue);
+            DataTable dt = SQLUtility.GetDataTable(cmd);
+            return GetListFromDataTable(dt);
+        }
 
         public int RecipeId
         {
